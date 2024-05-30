@@ -1,7 +1,7 @@
 
 import CardDataStats from '../../components/CardDataStats';
 import RegistrationProgressionChart from '../../components/Charts/RegistrationProgressionChart';
-import UserVeen from '../../components/Charts/UserVeen';
+import ChartThree from '../../components/Charts/ChartThree';
 // import ChartTwo from '../../components/Charts/ChartTwo';
 import DefaultLayout from '../../layout/DefaultLayout';
 import TableZoneWiseCount from '../../components/Tables/TableZoneWiseCount';
@@ -93,7 +93,7 @@ const DashboardPage = () => {
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
       
         {/* <ChartTwo /> */}
-        <UserVeen />
+        <ChartThree />
         {/* <MapOne /> */}
         <TableZoneWiseCount></TableZoneWiseCount>
         <RegistrationProgressionChart />        
