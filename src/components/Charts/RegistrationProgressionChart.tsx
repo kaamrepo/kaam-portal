@@ -21,7 +21,6 @@ const options: ApexOptions = {
       left: 0,
       opacity: 0.1,
     },
-
     toolbar: {
       show: false,
     },
@@ -48,10 +47,6 @@ const options: ApexOptions = {
     width: [2, 2],
     curve: 'straight',
   },
-  // labels: {
-  //   show: false,
-  //   position: "top",
-  // },
   grid: {
     xaxis: {
       lines: {
@@ -120,32 +115,64 @@ interface ChartOneState {
     name: string;
     data: number[];
   }[];
+  categories: string[];
 }
 
 const ChartOne: React.FC = () => {
+  const [timeframe, setTimeframe] = useState<'Day' | 'Week' | 'Month'>('Month');
   const [state, setState] = useState<ChartOneState>({
     series: [
       {
-        name: 'Product One',
+        name: 'User Registration',
         data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45],
       },
-
-      {
-        name: 'Product Two',
-        data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39, 51],
-      },
+    ],
+    categories: [
+      'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'
     ],
   });
 
-  const handleReset = () => {
-    setState((prevState) => ({
-      ...prevState,
-    }));
+  const handleTimeframeChange = (newTimeframe: 'Day' | 'Week' | 'Month') => {
+    let newSeriesData: number[] = [];
+    let newCategories: string[] = [];
+
+    switch (newTimeframe) {
+      case 'Day':
+        newSeriesData = [3, 5, 2, 8, 1, 4, 7, 6, 5, 4, 3, 2];
+        newCategories = [
+          '01 May', '02 May', '03 May', '04 May', '05 May', '06 May', 
+          '07 May', '08 May', '09 May', '10 May', '11 May', '12 May'
+        ];
+        break;
+      case 'Week':
+        newSeriesData = [23, 21, 25, 27, 22, 28, 24, 23, 26, 25, 27, 28];
+        newCategories = [
+          'Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 
+          'Week 7', 'Week 8', 'Week 9', 'Week 10', 'Week 11', 'Week 12'
+        ];
+        break;
+      case 'Month':
+        newSeriesData = [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45];
+        newCategories = [
+          'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'
+        ];
+        break;
+    }
+
+    setTimeframe(newTimeframe);
+    setState({
+      series: [
+        {
+          name: 'User Registration',
+          data: newSeriesData,
+        },
+      ],
+      categories: newCategories,
+    });
   };
-  handleReset;
 
   return (
-<div className="col-span-12 xl:col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5">
+    <div className="col-span-12 xl:col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5">
       <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
         <div className="flex w-full flex-wrap gap-3 sm:gap-5">
           <div className="flex min-w-47.5">
@@ -156,27 +183,36 @@ const ChartOne: React.FC = () => {
               <p className="font-semibold text-primary">Total User Registration</p>
             </div>
           </div>
-         
         </div>
         <div className="flex w-full max-w-45 justify-end">
-          <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4">
-            <button className="rounded bg-white py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark">
-              Day
-            </button>
-            <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
-              Week
-            </button>
-            <button className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark">
-              Month
-            </button>
-          </div>
-        </div>
+  <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4 space-x-2">
+    <button
+      className={`rounded bg-white py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark ${timeframe === 'Day' ? 'bg-blue-500 text-white' : ''}`}
+      onClick={() => handleTimeframeChange('Day')}
+    >
+      Day
+    </button>
+    <button
+      className={`rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark ${timeframe === 'Week' ? 'bg-blue-500 text-white' : ''}`}
+      onClick={() => handleTimeframeChange('Week')}
+    >
+      Week
+    </button>
+    <button
+      className={`rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark ${timeframe === 'Month' ? 'bg-blue-500 text-white' : ''}`}
+      onClick={() => handleTimeframeChange('Month')}
+    >
+      Month
+    </button>
+  </div>
+</div>
+
       </div>
 
       <div>
         <div id="chartOne" className="-ml-5">
           <ReactApexChart
-            options={options}
+            options={{ ...options, xaxis: { ...options.xaxis, categories: state.categories } }}
             series={state.series}
             type="area"
             height={350}

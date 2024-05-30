@@ -1,17 +1,17 @@
 
 import CardDataStats from '../../components/CardDataStats';
-import ChartOne from '../../components/Charts/ChartOne';
+import ChartOne from '../../components/Charts/RegistrationProgressionChart';
 import ChartThree from '../../components/Charts/ChartThree';
 // import ChartTwo from '../../components/Charts/ChartTwo';
-import ChatCard from '../../components/Chat/ChatCard';
-import MapOne from '../../components/Maps/MapOne';
 import DefaultLayout from '../../layout/DefaultLayout';
+import TableZoneWiseCount from '../../components/Tables/TableZoneWiseCount';
 
 const DashboardPage = () => {
   return (
     <DefaultLayout>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-3">
         {' '}
+       
         <CardDataStats title="Total Users" total="10000">
           <svg
             className="fill-primary dark:fill-white"
@@ -94,11 +94,11 @@ const DashboardPage = () => {
       
         {/* <ChartTwo /> */}
         <ChartThree />
-        <MapOne />
-        <ChartOne />
-        <ChatCard />
-        
+        {/* <MapOne /> */}
+        <TableZoneWiseCount></TableZoneWiseCount>
+        <ChartOne />        
       </div>
+    
     </DefaultLayout>
   );
 };
