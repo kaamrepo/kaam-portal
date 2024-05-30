@@ -17,7 +17,7 @@ const options: ApexOptions = {
     show: true,
     position: 'bottom',
   },
-  plotOptions: {
+  plotOptions: {  
     pie: {
       donut: {
         size: '65%',
@@ -53,12 +53,6 @@ const ChartThree: React.FC = () => {
     series: [50, 20, 30], // Updated series to reflect new stats
   });
 
-  const handleReset = () => {
-    setState((prevState) => ({
-    ...prevState,
-      series: [50, 20, 30], // Ensure this matches the updated series
-    }));
-  };
 
   return (
     <div className="sm:px-7.5 col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-5">
