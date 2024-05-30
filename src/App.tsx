@@ -5,9 +5,9 @@ import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
-// import DashboardPage from './pages/Dashboard/DashboardPage';
-import DashboardPage from './pages/Dashboard/DashboardPage'
+import DashboardPage from './pages/Dashboard/DashboardPage';
 import FormElements from './pages/Form/FormElements';
+import UserRegistrationForm from './pages/Form/UserRegistrationForm';
 import FormLayout from './pages/Form/FormLayout';
 import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
@@ -46,6 +46,15 @@ function App() {
             <>
               <PageTitle title="Form Elements | TailAdmin - Tailwind CSS Admin Dashboard Template" />
               <FormElements />
+            </>
+          }
+        />
+        <Route
+          path="/forms/userregistration"
+          element={
+            <>
+              <PageTitle title="Register User" />
+              <UserRegistrationForm />
             </>
           }
         />
