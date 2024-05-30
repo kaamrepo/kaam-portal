@@ -2,7 +2,8 @@
 import DefaultLayout from '../../layout/DefaultLayout';
 import { cat } from '../../types/category.types';
 import { SetStateAction, useState } from 'react';
-
+import 'react-responsive-modal/styles.css';
+import { Modal } from 'react-responsive-modal';
 const brandData: cat[] = [
   {
     name: "Chef",
@@ -38,18 +39,25 @@ const brandData: cat[] = [
 
 
 export const Categories = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [open, setOpen] = useState(false);
 
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
-    const handleSubmit = (formData) => {
-      console.log("Form submitted:", formData);
-    };
-    
-    console.log("isModalOpen",isModalOpen);
+  const onOpenModal = () => setOpen(true);
+  const onCloseModal = () => setOpen(false);
+
     
   return (
     <DefaultLayout>
+       <div>
+      <button onClick={onOpenModal}>Open modal</button>
+      <Modal open={open} onClose={onCloseModal} closeOnEsc={false} closeOnOverlayClick={false} center>
+        <h2>Simple centered modal</h2>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
+          pulvinar risus non risus hendrerit venenatis. Pellentesque sit amet
+          hendrerit risus, sed porttitor quam.
+        </p>
+      </Modal>
+    </div>
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
         Categories
