@@ -2,7 +2,7 @@ import { ApexOptions } from 'apexcharts';
 import React, { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 
-interface ChartThreeState {
+interface UserVeenState {
   series: number[];
 }
 
@@ -49,8 +49,8 @@ const options: ApexOptions = {
   ],
 };
 
-const ChartThree: React.FC = () => {
-  const [state, setState] = useState<ChartThreeState>({
+const UserVeen: React.FC = () => {
+  const [state, setState] = useState<UserVeenState>({
     series: [65, 34, 12, 56],
   });
 
@@ -97,7 +97,7 @@ const ChartThree: React.FC = () => {
       </div>
 
       <div className="mb-2">
-        <div id="chartThree" className="mx-auto flex justify-center">
+        <div id="UserVeen" className="mx-auto flex justify-center">
           <ReactApexChart
             options={options}
             series={state.series}
@@ -139,4 +139,4 @@ const ChartThree: React.FC = () => {
   );
 };
 
-export default ChartThree;
+export default UserVeen;

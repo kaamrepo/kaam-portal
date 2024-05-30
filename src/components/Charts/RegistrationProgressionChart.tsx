@@ -1,7 +1,7 @@
 import { ApexOptions } from 'apexcharts';
 import React, { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
-
+import { primaryBGColor } from '../../common/colors';
 const options: ApexOptions = {
   legend: {
     show: false,
@@ -110,7 +110,7 @@ const options: ApexOptions = {
   },
 };
 
-interface ChartOneState {
+interface RegistrationProgressionChartState {
   series: {
     name: string;
     data: number[];
@@ -118,9 +118,9 @@ interface ChartOneState {
   categories: string[];
 }
 
-const ChartOne: React.FC = () => {
+const RegistrationProgressionChart: React.FC = () => {
   const [timeframe, setTimeframe] = useState<'Day' | 'Week' | 'Month'>('Month');
-  const [state, setState] = useState<ChartOneState>({
+  const [state, setState] = useState<RegistrationProgressionChartState>({
     series: [
       {
         name: 'User Registration',
@@ -176,41 +176,42 @@ const ChartOne: React.FC = () => {
       <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
         <div className="flex w-full flex-wrap gap-3 sm:gap-5">
           <div className="flex min-w-47.5">
-            <span className="mt-1 mr-2 flex h-4 w-full max-w-4 items-center justify-center rounded-full border border-primary">
-              <span className="block h-2.5 w-full max-w-2.5 rounded-full bg-primary"></span>
-            </span>
             <div className="w-full">
-              <p className="font-semibold text-primary">Total User Registration</p>
+              <p className="font-semibold text-black dark:text-white">Total User Registration</p>
             </div>
           </div>
         </div>
         <div className="flex w-full max-w-45 justify-end">
-  <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4 space-x-2">
-    <button
-      className={`rounded bg-white py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark ${timeframe === 'Day' ? 'bg-blue-500 text-white' : ''}`}
-      onClick={() => handleTimeframeChange('Day')}
-    >
-      Day
-    </button>
-    <button
-      className={`rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark ${timeframe === 'Week' ? 'bg-blue-500 text-white' : ''}`}
-      onClick={() => handleTimeframeChange('Week')}
-    >
-      Week
-    </button>
-    <button
-      className={`rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark ${timeframe === 'Month' ? 'bg-blue-500 text-white' : ''}`}
-      onClick={() => handleTimeframeChange('Month')}
-    >
-      Month
-    </button>
-  </div>
+        <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4 space-x-2">
+  <button
+    className="rounded py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark"
+    style={{ backgroundColor: timeframe === 'Day' ? primaryBGColor : 'white', color: timeframe === 'Day' ? 'white' : 'black' }}
+    onClick={() => handleTimeframeChange('Day')}
+  >
+    Day
+  </button>
+  <button
+    className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark"
+    style={{ backgroundColor: timeframe === 'Week' ? primaryBGColor : 'white', color: timeframe === 'Week' ? 'white' : 'black' }}
+    onClick={() => handleTimeframeChange('Week')}
+  >
+    Week
+  </button>
+  <button
+    className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark"
+    style={{ backgroundColor: timeframe === 'Month' ? primaryBGColor : 'white', color: timeframe === 'Month' ? 'white' : 'black' }}
+    onClick={() => handleTimeframeChange('Month')}
+  >
+    Month
+  </button>
+</div>
+
 </div>
 
       </div>
 
       <div>
-        <div id="chartOne" className="-ml-5">
+        <div id="RegistrationProgressionChart" className="-ml-5">
           <ReactApexChart
             options={{ ...options, xaxis: { ...options.xaxis, categories: state.categories } }}
             series={state.series}
@@ -223,4 +224,4 @@ const ChartOne: React.FC = () => {
   );
 };
 
-export default ChartOne;
+export default RegistrationProgressionChart;
