@@ -183,27 +183,33 @@ const RegistrationProgressionChart: React.FC = () => {
         </div>
         <div className="flex w-full max-w-45 justify-end">
         <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4 space-x-2">
-  <button
-    className="rounded py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark"
-    style={{ backgroundColor: timeframe === 'Day' ? primaryBGColor : 'white', color: timeframe === 'Day' ? 'white' : 'black' }}
-    onClick={() => handleTimeframeChange('Day')}
-  >
-    Day
-  </button>
-  <button
-    className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark"
-    style={{ backgroundColor: timeframe === 'Week' ? primaryBGColor : 'white', color: timeframe === 'Week' ? 'white' : 'black' }}
-    onClick={() => handleTimeframeChange('Week')}
-  >
-    Week
-  </button>
-  <button
-    className="rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark"
-    style={{ backgroundColor: timeframe === 'Month' ? primaryBGColor : 'white', color: timeframe === 'Month' ? 'white' : 'black' }}
-    onClick={() => handleTimeframeChange('Month')}
-  >
-    Month
-  </button>
+        <button
+  className={`rounded py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark ${
+    timeframe === 'Day' ? 'bg-primaryBGColor text-white' : ''
+  }`}
+  onClick={() => handleTimeframeChange('Day')}
+>
+  Day
+</button>
+
+<button
+  className={`rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark ${
+    timeframe === 'Week' ? 'bg-primaryBGColor text-white' : ''
+  }`}
+  onClick={() => handleTimeframeChange('Week')}
+>
+  Week
+</button>
+
+<button
+  className={`rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark ${
+    timeframe === 'Month' ? 'bg-primaryBGColor text-white' : ''
+  }`}
+  onClick={() => handleTimeframeChange('Month')}
+>
+  Month
+</button>
+
 </div>
 
 </div>

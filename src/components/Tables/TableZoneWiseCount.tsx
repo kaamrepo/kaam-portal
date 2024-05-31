@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { primaryBGColor } from '../../common/colors';
 interface CountData {
   name: string;
   count: number;
@@ -30,7 +29,9 @@ const useCountData: { [key: string]: CountData[] } = {
 };
 
 const TableZoneWiseCount: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<'State' | 'District' | 'City'>('State');
+  const [selectedCategory, setSelectedCategory] = useState<
+    'State' | 'District' | 'City'
+  >('State');
 
   const handleButtonClick = (category: 'State' | 'District' | 'City') => {
     setSelectedCategory(category);
@@ -43,36 +44,42 @@ const TableZoneWiseCount: React.FC = () => {
           {selectedCategory} Wise User Count
         </h4>
         <div className="space-x-2">
-  <button
-    className={`rounded py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark`}
-    style={{ backgroundColor: selectedCategory === 'State' ? primaryBGColor : 'white', color: selectedCategory === 'State' ? 'white' : 'black' }}
-    onClick={() => handleButtonClick('State')}
-  >
-    State
-  </button>
-  <button
-    className={`rounded py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark`}
-    style={{ backgroundColor: selectedCategory === 'District' ? primaryBGColor : 'white', color: selectedCategory === 'District' ? 'white' : 'black' }}
-    onClick={() => handleButtonClick('District')}
-  >
-    District
-  </button>
-  <button
-    className={`rounded py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark`}
-    style={{ backgroundColor: selectedCategory === 'City' ? primaryBGColor : 'white', color: selectedCategory === 'City' ? 'white' : 'black' }}
-    onClick={() => handleButtonClick('City')}
-  >
-    City
-  </button>
-</div>
+          <button
+            className={`rounded py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark ${
+              selectedCategory === 'State' ? 'bg-primaryBGColor text-white' : ''
+            }`}
+            onClick={() => handleButtonClick('State')}
+          >
+            State
+          </button>
 
+          <button
+            className={`rounded py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark ${
+              selectedCategory === 'District'
+                ? 'bg-primaryBGColor text-white'
+                : ''
+            }`}
+            onClick={() => handleButtonClick('District')}
+          >
+            District
+          </button>
+
+          <button
+            className={`rounded py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark ${
+              selectedCategory === 'City' ? 'bg-primaryBGColor text-white' : ''
+            }`}
+            onClick={() => handleButtonClick('City')}
+          >
+            City
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-col justify-between">
         <div className="flex justify-between items-center rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-5">
           <div className="p-2.5 xl:p-5">
             <h5 className="text-sm font-medium uppercase xsm:text-base">
-            {selectedCategory}
+              {selectedCategory}
             </h5>
           </div>
           <div className="p-2.5 text-center xl:p-5">

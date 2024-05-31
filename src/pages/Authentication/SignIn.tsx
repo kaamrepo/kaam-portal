@@ -1,24 +1,61 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import Logo from '../../images/logo/kaamapplogo.png';
 import DefaultLayout from '../../layout/DefaultLayout';
-import { useState } from 'react';
+import useLoginStore from '../../store/login.store';
+
 const SignIn: React.FC = () => {
+  const { getOtp, verifyOtp } = useLoginStore();
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [otp, setOtp] = useState('');
   const [isSendingOTP, setIsSendingOTP] = useState(false);
+  const [isVerifyingOTP, setIsVerifyingOTP] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
 
-  const handleSendOTP = () => {
-    // Disable the button
-    setIsSendingOTP(true);
-
-    // Simulate sending OTP (replace with your actual logic)
-    setTimeout(() => {
-      // After some time, enable the button again
-      setIsSendingOTP(false);
-      console.log(`Sending OTP to ${phoneNumber}`);
-    }, 2000); // Simulate a delay of 2 seconds
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, ''); // Remove non-numeric characters
+    if (value.length <= 10) {
+      setPhoneNumber(value);
+    }
   };
+
+  const handleSendOTP = async () => {
+    if (phoneNumber.length === 10) {
+      setIsSendingOTP(true);
+      try {
+        await getOtp(phoneNumber);
+        setOtpSent(true);
+      } catch (error) {
+        console.error('Error sending OTP:', error);
+      } finally {
+        setIsSendingOTP(false);
+      }
+    }
+  };
+
+  const handleVerifyOTP = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (otp.length >= 4) {
+      setIsVerifyingOTP(true);
+      try {
+        await verifyOtp(phoneNumber, otp);
+        // Redirect or show success message
+      } catch (error) {
+        console.error('Error verifying OTP:', error);
+        // Show error message
+      } finally {
+        setIsVerifyingOTP(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (phoneNumber.length !== 10) {
+      setOtpSent(false);
+    }
+  }, [phoneNumber]);
+
   return (
     <DefaultLayout>
       <Breadcrumb pageName="Sign In" />
@@ -49,7 +86,7 @@ const SignIn: React.FC = () => {
                 Sign in to Kaam Admin Portal
               </h2>
 
-              <form>
+              <form onSubmit={handleVerifyOTP}>
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     Phone
@@ -63,21 +100,25 @@ const SignIn: React.FC = () => {
                         type="text"
                         placeholder="Enter phone number"
                         value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
+                        onChange={handlePhoneNumberChange}
                         className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       />
                     </div>
                     <button
+                      type="button"
                       onClick={handleSendOTP}
-                      disabled={isSendingOTP}
+                      disabled={isSendingOTP || phoneNumber.length !== 10 || otp.length >= 4}
                       className={`ml-2 bg-primaryBGColor text-white px-3 py-2 rounded-lg ${
-                        isSendingOTP ? 'opacity-50 cursor-not-allowed' : ''
+                        isSendingOTP || phoneNumber.length !== 10 || otp.length >= 4
+                          ? 'opacity-50 cursor-not-allowed'
+                          : ''
                       }`}
                     >
                       {isSendingOTP ? 'Sending...' : 'Send OTP'}
                     </button>
                   </div>
                 </div>
+
                 <div className="mb-6">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     OTP
@@ -86,6 +127,9 @@ const SignIn: React.FC = () => {
                     <input
                       type="text"
                       placeholder="OTP"
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value)}
+                      disabled={!otpSent}
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                     />
 
@@ -117,7 +161,12 @@ const SignIn: React.FC = () => {
                   <input
                     type="submit"
                     value="Verify"
-                    className="w-full cursor-pointer rounded-lg border bg-primaryBGColor p-4 text-white transition hover:bg-opacity-90"
+                    disabled={isVerifyingOTP || otp.length < 4 || isSendingOTP}
+                    className={`w-full cursor-pointer rounded-lg border bg-primaryBGColor p-4 text-white transition hover:bg-opacity-90 ${
+                      isVerifyingOTP || otp.length < 4 || isSendingOTP
+                        ? 'opacity-50 cursor-not-allowed'
+                        : ''
+                    }`}
                   />
                 </div>
 
