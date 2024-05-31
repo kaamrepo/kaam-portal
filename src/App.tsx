@@ -1,8 +1,7 @@
+// App.tsx
 import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
-
 import Loader from './common/Loader';
-import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import DashboardPage from './pages/Dashboard/DashboardPage';
@@ -16,125 +15,42 @@ import { Categories } from './pages/Categories/Categories';
 import { Toaster } from 'react-hot-toast';
 import RouteGuard from './common/RouteGuard';
 import useLoginStore from './store/login.store';
+
 function App() {
-  const [loading, setLoading] = useState(true);
-  const {isAuthenticated} = useLoginStore();
-  const { pathname } = useLocation();
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    const [loading, setLoading] = useState(true);
+    const { isAuthenticated } = useLoginStore();
+    const { pathname } = useLocation();
 
-  useEffect(() => {
-    setTimeout(() => setLoading(false), 1000);
-  }, []);
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname]);
 
-  return loading ? (
-    <Loader />
-  ) : (
-    <>
-      <Toaster />
-      <Routes>
-        <Route
-          index
-          element={
-            <>
-              <PageTitle title="Kaam Dashboard" />
-              <DashboardPage />
-            </>
-          }
-        />
-       
-        <Route
-          path="/action/form-elements"
-          element={
-            <>
-              <PageTitle title="Form Elements | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-              <FormElements />
-            </>
-          }
-        />
-        <Route
-          path="/action/categories"
-          element={
-            <RouteGuard Component = {Categories}/>
-          }
-        />
-        {/* <Route
-          path="/action/categories"
-          element={
-            <>
-              <PageTitle title="Form Elements | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-              <Categories />
-            </>
-          }
-        /> */}
-        <Route
-          path="/action/userregistration"
-          element={
-            <>
-              <PageTitle title="Register User" />
-              <UserRegistrationForm />
-            </>
-          }
-        />
-        <Route
-          path="/action/form-layout"
-          element={
-            <>
-              <PageTitle title="Form Layout | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-              <FormLayout />
-            </>
-          }
-        />
-        <Route
-          path="/tables"
-          element={
-            <>
-              <PageTitle title="Tables | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-              <Tables />
-            </>
-          }
-        />
-      
-        <Route
-          path="/ui/alerts"
-          element={
-            <>
-              <PageTitle title="Alerts | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-              <Alerts />
-            </>
-          }
-        />
-        <Route
-          path="/ui/buttons"
-          element={
-            <>
-              <PageTitle title="Buttons | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-              <Buttons />
-            </>
-          }
-        />
-        <Route
-          path="/auth/signin"
-          element={
-            <>
-              <PageTitle title="Signin | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-              <SignIn />
-            </>
-          }
-        />
-        <Route
-          path="/auth/signup"
-          element={
-            <>
-              <PageTitle title="Signup | TailAdmin - Tailwind CSS Admin Dashboard Template" />
-              <SignUp />
-            </>
-          }
-        />
-      </Routes>
-    </>
-  );
+    useEffect(() => {
+        setTimeout(() => setLoading(false), 1000);
+    }, []);
+
+    return loading ? (
+        <Loader />
+    ) : (
+        <>
+            <Toaster />
+            <Routes>
+                {/* Non-protected routes */}
+                <Route path="/auth/signin" element={<SignIn />} />
+                <Route path="/auth/signup" element={<SignUp />} />
+
+                {/* Protected routes with RouteGuard */}
+                <Route path="/" element={<RouteGuard Component={DashboardPage} isAuthenticated={isAuthenticated} />} />
+                <Route path="/action/form-elements" element={<RouteGuard Component={FormElements} isAuthenticated={isAuthenticated} />} />
+                <Route path="/action/categories" element={<RouteGuard Component={Categories} isAuthenticated={isAuthenticated} />} />
+                <Route path="/action/userregistration" element={<RouteGuard Component={UserRegistrationForm} isAuthenticated={isAuthenticated} />} />
+                <Route path="/action/form-layout" element={<RouteGuard Component={FormLayout} isAuthenticated={isAuthenticated} />} />
+                <Route path="/tables" element={<RouteGuard Component={Tables} isAuthenticated={isAuthenticated} />} />
+                <Route path="/ui/alerts" element={<RouteGuard Component={Alerts} isAuthenticated={isAuthenticated} />} />
+                <Route path="/ui/buttons" element={<RouteGuard Component={Buttons} isAuthenticated={isAuthenticated} />} />
+            </Routes>
+        </>
+    );
 }
 
 export default App;
