@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Logo from '../../images/logo/kaamapplogo.png';
-import DefaultLayout from '../../layout/DefaultLayout';
+import { useNavigate } from 'react-router-dom';
 import useLoginStore from '../../store/login.store';
 import toast from 'react-hot-toast';
 const SignIn: React.FC = () => {
@@ -11,7 +11,7 @@ const SignIn: React.FC = () => {
   const [isSendingOTP, setIsSendingOTP] = useState(false);
   const [isVerifyingOTP, setIsVerifyingOTP] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
-
+  const navigate = useNavigate();
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, ''); // Remove non-numeric characters
     if (value.length <= 10) {
@@ -54,7 +54,19 @@ const SignIn: React.FC = () => {
       setIsVerifyingOTP(true);
       try {
         const response:any = await verifyOtp(phoneNumber,otp);
-      console.log("response ,resonse of API",response);
+        if (response?.status) {
+        
+          toast.success('Login Successfull',{
+            duration: 4000,
+      position: 'top-right',
+          });
+          console.log("before return");
+          navigate('/')
+         }else{
+          toast.error('Unable to Login',{
+            duration: 4000,
+      position: 'top-right',})
+         }
       
       } catch (error) {
         console.error('Error verifying OTP:', error);
@@ -72,7 +84,6 @@ const SignIn: React.FC = () => {
   }, [phoneNumber]);
 
   return (
-    <DefaultLayout>
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
@@ -200,7 +211,7 @@ const SignIn: React.FC = () => {
           </div>
         </div>
       </div>
-    </DefaultLayout>
+
   );
 };
 
