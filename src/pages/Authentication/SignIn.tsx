@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import Logo from '../../images/logo/kaamapplogo.png';
 import DefaultLayout from '../../layout/DefaultLayout';
 import useLoginStore from '../../store/login.store';
 import toast from 'react-hot-toast';
 const SignIn: React.FC = () => {
-  const { getOtp } = useLoginStore();
+  const { getOtp,verifyOtp } = useLoginStore();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
   const [isSendingOTP, setIsSendingOTP] = useState(false);
@@ -54,8 +53,9 @@ const SignIn: React.FC = () => {
     if (otp.length >= 4) {
       setIsVerifyingOTP(true);
       try {
-        // await verifyOtp(phoneNumber, otp);
-        // Redirect or show success message
+        const response:any = await verifyOtp(phoneNumber,otp);
+      console.log("response ,resonse of API",response);
+      
       } catch (error) {
         console.error('Error verifying OTP:', error);
         // Show error message
@@ -73,8 +73,6 @@ const SignIn: React.FC = () => {
 
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="Sign In" />
-
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
@@ -139,14 +137,18 @@ const SignIn: React.FC = () => {
                     OTP
                   </label>
                   <div className="relative">
-                    <input
-                      type="text"
-                      placeholder="OTP"
-                      value={otp}
-                      onChange={(e) => setOtp(e.target.value)}
-                      disabled={!otpSent}
-                      className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                    />
+                  <input
+  type="text"
+  placeholder= {!otpSent ? 'OTP' : 'Enter OTP'}
+  value={otp}
+  onChange={(e) => setOtp(e.target.value)}
+  disabled={!otpSent}
+  autoFocus={otpSent} // Focus the input field when otpSent is true
+  className={`w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
+    otpSent ? 'border-primary border-2 bg-primaryBGColor' : ''
+  }`}
+/>
+
 
                     <span className="absolute right-4 top-4">
                       <svg
@@ -203,3 +205,5 @@ const SignIn: React.FC = () => {
 };
 
 export default SignIn;
+
+

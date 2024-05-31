@@ -1,9 +1,7 @@
 import API from '../common/API';
 import { create } from 'zustand';
 import { LOGIN_USER, GET_OTP } from '../common/endpoint';
-console.log('API', API);
-console.log('LOGIN_USER', LOGIN_USER);
-
+import { LoginResponse } from '../types/login.types';
 interface State {
   loaderState: boolean;
   isAuthenticated: boolean;
@@ -11,7 +9,7 @@ interface State {
   setToken: (token: string) => void;
   setLoaderState: (status: boolean) => void;
   getOtp: (payload: {}) => void;
-  verifyOtp: (paylaod: {}) => void;
+  verifyOtp: (phone: string, otp: string) => void;
 }
 
 export const useLoginStore = create<State>((set) => ({
@@ -24,14 +22,16 @@ export const useLoginStore = create<State>((set) => ({
   getOtp: async (payload) => {
     try {
       const response = await API.patch(GET_OTP, payload);
-      console.log('API redeponse', response);
-
       if (response?.data?._id) {
         return {
           data: response?.data,
           status: true,
         };
       } else {
+        return {
+          data: {},
+          status: false,
+        };
       }
     } catch (error) {
       return {
@@ -40,10 +40,35 @@ export const useLoginStore = create<State>((set) => ({
       };
     }
   },
-  verifyOtp: (payload) => {
-    console.log('payload in veriffyOTP', payload);
+  verifyOtp: async (phone, otp) => {
+    try {
+      let data = {
+        phone,
+        otp,
+        data: new Date(),
+        strategy: 'local',
+      };
+      const response: LoginResponse = await API.post(LOGIN_USER, data);
+      if (response?.data?.accessToken) {
+        sessionStorage.setItem('token', response.data.accessToken);
+        sessionStorage.setItem('user', JSON.stringify(response.data.user));
+        return {
+          data: response?.data,
+          status: true,
+        };
+      } else {
+        return {
+          data: {},
+          status: false,
+        };
+      }
+    } catch (error) {
+      return {
+        data: {},
+        status: false,
+      };
+    }
   },
-  // set((state) => ({...state, token, isAuthenticated:!!token })),
 }));
 
 export default useLoginStore;
