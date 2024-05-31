@@ -4,9 +4,9 @@ import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import Logo from '../../images/logo/kaamapplogo.png';
 import DefaultLayout from '../../layout/DefaultLayout';
 import useLoginStore from '../../store/login.store';
-
+import toast from 'react-hot-toast';
 const SignIn: React.FC = () => {
-  const { getOtp, verifyOtp } = useLoginStore();
+  const { getOtp } = useLoginStore();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otp, setOtp] = useState('');
   const [isSendingOTP, setIsSendingOTP] = useState(false);
@@ -24,8 +24,23 @@ const SignIn: React.FC = () => {
     if (phoneNumber.length === 10) {
       setIsSendingOTP(true);
       try {
-        await getOtp(phoneNumber);
-        setOtpSent(true);
+       const payload = {
+        "dialcode": "+91",
+        "phone": phoneNumber
+    }
+     const response:any = await getOtp(payload);     
+     if (response?.status) {
+      setOtpSent(true);
+      toast.success('otp sent successfully',{
+        duration: 4000,
+  position: 'top-right',
+      })
+     }else{
+      toast.error('Unable to send OTP',{
+        duration: 4000,
+  position: 'top-right',})
+     }
+       
       } catch (error) {
         console.error('Error sending OTP:', error);
       } finally {
@@ -39,7 +54,7 @@ const SignIn: React.FC = () => {
     if (otp.length >= 4) {
       setIsVerifyingOTP(true);
       try {
-        await verifyOtp(phoneNumber, otp);
+        // await verifyOtp(phoneNumber, otp);
         // Redirect or show success message
       } catch (error) {
         console.error('Error verifying OTP:', error);

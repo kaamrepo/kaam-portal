@@ -13,11 +13,10 @@ import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import { Categories } from './pages/Categories/Categories';
-
+import { Toaster } from 'react-hot-toast';
 function App() {
   const [loading, setLoading] = useState(true);
   const { pathname } = useLocation();
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
@@ -30,6 +29,7 @@ function App() {
     <Loader />
   ) : (
     <>
+      <Toaster />
       <Routes>
         <Route
           index

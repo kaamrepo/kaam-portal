@@ -2,29 +2,32 @@ import axios from 'axios';
 import useLoginStore from '../store/login.store';
 
 const API = axios.create({
+  baseURL: process.env.REACT_APP_KAAM_PORTAL_HOST,
   headers: {
     'Content-Type': 'application/json',
-    // timezone: getTimeZone(),
   },
 });
 
-//interceptor which calls custom enable loader function when the request is sent through axios
-API.interceptors.request.use(async request => {
-  
-    useLoginStore.getState().setLoaderState(true);
-  return request;
+// Add an interceptor to include the Authorization header
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  useLoginStore.getState().setLoaderState(true);
+  return config;
 });
 
-//interceptor which calls custom disable loader function when the response is received.
+// Add interceptors for handling response and error
 API.interceptors.response.use(
-  async response => {
+  (response) => {
     useLoginStore.getState().setLoaderState(false);
     return response;
   },
-  async error => {
+  (error) => {
     useLoginStore.getState().setLoaderState(false);
     throw error;
-  },
+  }
 );
 
 export default API;
