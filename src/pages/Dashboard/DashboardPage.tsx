@@ -5,8 +5,13 @@ import ChartThree from '../../components/Charts/ChartThree';
 // import ChartTwo from '../../components/Charts/ChartTwo';
 import DefaultLayout from '../../layout/DefaultLayout';
 import TableZoneWiseCount from '../../components/Tables/TableZoneWiseCount';
-
+import dashboardStore from '../../store/Dashboard.store';
+import { useEffect } from 'react';
 const DashboardPage = () => {
+  const {getCounts,totaluser,totalPostedJobs,totalAppliedJobs,totalEngagements} = dashboardStore();
+  useEffect(()=>{
+    getCounts();
+  },[])
   return (
     <DefaultLayout>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-3">
