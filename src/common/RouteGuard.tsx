@@ -6,9 +6,10 @@ interface RouteGuardProps {
     isAuthenticated: boolean;
 }
 
-const RouteGuard: React.FC<RouteGuardProps> = ({ Component, isAuthenticated }) => {
+const RouteGuard: React.FC<RouteGuardProps> = ({ Component, isAuthenticated = true }) => {
     console.log("isAuthenticated in routeGuard:", isAuthenticated);
-    return isAuthenticated ? <Component /> : <Navigate to="/auth/signin" replace />;
+    // return isAuthenticated ? <Component /> : <Navigate to="/auth/signin" replace />;
+    return isAuthenticated ? <Component /> :<Component />;
 };
 
 export default RouteGuard;

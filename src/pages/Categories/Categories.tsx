@@ -1,43 +1,19 @@
 import DefaultLayout from '../../layout/DefaultLayout';
-import { cat } from '../../types/category.types';
 import 'react-responsive-modal/styles.css';
 import { EditCategoryModal } from './EditCategoryModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import useCategoryStore from '../../store/categories.store';
+import { Link } from 'react-router-dom';
 
-const brandData: cat[] = [
-  {
-    name: "Chef",
-    createon: "22-05-2024",
-    isActive: true,
-    createdby: "Peter",
-  },
-  {
-    name: "Garden",
-    createon: "22-05-2024",
-    isActive: true,
-    createdby: "Peter",
-  },
-  {
-    name: "mail",
-    createon: "22-05-2024",
-    isActive: true,
-    createdby: "Peter",
-  },
-  {
-    name: "test",
-    createon: "22-05-2024",
-    isActive: true,
-    createdby: "Peter",
-  },
-  {
-    name: "Chadsfghef",
-    createon: "22-05-2024",
-    isActive: true,
-    createdby: "Peter",
-  },
-];
 
 export const Categories = () => {
+  const {categories,getCategories} = useCategoryStore()
+  useEffect(()=>{
+    const payload = {
+      isActive:true
+    }
+    getCategories(payload);
+  },[getCategories])
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
@@ -53,10 +29,17 @@ export const Categories = () => {
   return (
     <DefaultLayout>
       <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-        <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-          Categories
-        </h4>
-
+        <div className="flex flex-row justify-between align-middle">
+          <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
+            Categories
+          </h4>
+          <Link
+              to="#"
+              className="inline-flex items-center justify-center rounded-md bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+            > 
+             Add
+            </Link> 
+        </div>
         <div className="flex flex-col">
           <div className="grid grid-cols-3 rounded-sm bg-gray-2 dark:bg-meta-4 sm:grid-cols-5">
             <div className="p-2.5 xl:p-5">
@@ -86,37 +69,50 @@ export const Categories = () => {
             </div>
           </div>
 
-          {brandData.map((brand, key) => (
+          {categories?.map((category, key) => (
             <div
               className={`grid grid-cols-3 sm:grid-cols-5 ${
-                key === brandData.length - 1 ? '' : 'border-b border-stroke dark:border-strokedark'
+                key === brandData.length - 1
+                  ? ''
+                  : 'border-b border-stroke dark:border-strokedark'
               }`}
               key={key}
             >
               <div className="flex items-center gap-3 p-2.5 xl:p-5">
                 <div className="flex-shrink-0"></div>
                 <p className="hidden text-black dark:text-white sm:block">
-                  {brand.name}
+                  {category.name}
                 </p>
               </div>
 
               <div className="flex items-center justify-center p-2.5 xl:p-5">
-                <p className="text-black dark:text-white">{brand.createon}</p>
+                <p className="text-black dark:text-white">{category.createon}</p>
               </div>
 
               <div className="flex items-center justify-center p-2.5 xl:p-5">
-                <p className="text-meta-3">{brand.isActive ? "Yes" : "No"}</p>
+                <p className="text-meta-3">{category.isActive ? 'Yes' : 'No'}</p>
               </div>
 
               <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                <p className="text-black dark:text-white">{brand.createdby}</p>
+                <p className="text-black dark:text-white">{category.createdby}</p>
               </div>
 
               <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                <span onClick={() => openModal(brand)}>
-                  <svg className="feather feather-edit" fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                <span onClick={() => openModal(category)}>
+                  <svg
+                    className="feather feather-edit"
+                    fill="none"
+                    height="24"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                   </svg>
                 </span>
               </div>
@@ -124,11 +120,11 @@ export const Categories = () => {
           ))}
         </div>
       </div>
-      
       <EditCategoryModal
         open={isModalOpen}
         onCloseModal={closeModal}
         selectedCategory={selectedCategory}
-      />    </DefaultLayout>
+      />{' '}
+    </DefaultLayout>
   );
 };

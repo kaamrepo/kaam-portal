@@ -1,3 +1,14 @@
+ export 
+ interface LoginType {
+   loaderState: boolean;
+   isAuthenticated: boolean;
+   token: string | null;
+   setToken: (token: string) => void;
+   setLoaderState: (status: boolean) => void;
+   getOtp: (payload: {}) => void;
+   verifyOtp: (phone: string, otp: string) => void;
+ }
+ 
  export interface OtpResponse {
     data: {
       _id?: string;

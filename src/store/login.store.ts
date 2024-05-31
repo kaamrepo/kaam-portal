@@ -1,18 +1,9 @@
 import API from '../common/API';
 import { create } from 'zustand';
 import { LOGIN_USER, GET_OTP } from '../common/endpoint';
-import { LoginResponse } from '../types/login.types';
-interface State {
-  loaderState: boolean;
-  isAuthenticated: boolean;
-  token: string | null;
-  setToken: (token: string) => void;
-  setLoaderState: (status: boolean) => void;
-  getOtp: (payload: {}) => void;
-  verifyOtp: (phone: string, otp: string) => void;
-}
+import { LoginResponse,LoginType } from '../types/login.types';
 
-export const useLoginStore = create<State>((set) => ({
+export const useLoginStore = create<LoginType>((set) => ({
   isAuthenticated: false,
   token: null,
   loaderState: false,
