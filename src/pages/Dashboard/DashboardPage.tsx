@@ -35,7 +35,7 @@ const DashboardPage = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Employers" total="10000">
+        <CardDataStats title="Posted Jobs" total="10000">
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -58,7 +58,7 @@ const DashboardPage = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Employees" total="4000">
+        <CardDataStats title="Applied Jobs" total="4000">
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -73,7 +73,7 @@ const DashboardPage = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Mixed User" total="2500">
+        <CardDataStats title="Engagements" total="2500">
           <svg
             className="fill-primary dark:fill-white"
             width="22"

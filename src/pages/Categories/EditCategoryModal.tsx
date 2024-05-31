@@ -1,35 +1,25 @@
-import ReactModal from 'react-modal';
-import { cat } from '../../types/category.types';
-import DefaultLayout from '../../layout/DefaultLayout';
+import { Modal } from 'react-responsive-modal';
 
-interface ModalProps {
-  isOpen: boolean;
-  closeModal: (event: React.MouseEvent) => void;
-  brand: cat | null;
-}
+export const EditCategoryModal = ({ open, onCloseModal,selectedCategory }) => {
+  const handleSubmit = () => {
+    // Your form submit logic here
+    console.log(
+      "selectedcategour",selectedCategory    );
+      };
 
-const Modal: React.FC<ModalProps> = ({ isOpen, closeModal, brand }) => {
-  console.log("isOPen",isOpen);
-  console.log("closeModal",closeModal);
-  console.log("brand",brand);
-  
   return (
-    <ReactModal
-      isOpen={isOpen}
-      onRequestClose={closeModal}
-      contentLabel="Edit Brand Modal"
-    >
-      <h2>Edit Branda'lksdjfklasdjflasdf;asdjflakdl;das'kdslaj;hSFFFFFFSRTDGHTFGJKFGDFSTGRDATEwrtyuioytdrseaSDGFHJKFDSSL</h2>
-      <form>
-        <label>
-          Name:
-          <input type="text" value={brand?.name || ''} readOnly />
-        </label>
-        {/* Add other input fields for other properties */}
-        <button onClick={closeModal}>Close</button>
-      </form>
-    </ReactModal>
+    <Modal open={open} onClose={onCloseModal} closeOnOverlayClick={false} center>
+      <h2>Edit Category</h2>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
+        pulvinar risus non risus hendrerit venenatis. Pellentesque sit amet
+        hendrerit risus, sed porttitor quam.
+        {selectedCategory?.name} 
+        {selectedCategory?.createon} 
+        {selectedCategory?.isActive} 
+        {selectedCategory?.createdby} 
+      </p>
+      <button onClick={handleSubmit}>Submit</button>
+    </Modal>
   );
 };
-
-export default Modal;

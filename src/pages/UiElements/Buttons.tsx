@@ -147,7 +147,7 @@ const Buttons = () => {
 
             <Link
               to="#"
-              className="inline-flex items-center justify-center gap-2.5 bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+              className="inline-flex items-center justify-center gap-2.5 bg-meta-6 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
             >
               <span>
                 <svg
@@ -168,7 +168,7 @@ const Buttons = () => {
                   />
                 </svg>
               </span>
-              Button With Icon
+              Button With Icon color
             </Link>
 
             <Link
