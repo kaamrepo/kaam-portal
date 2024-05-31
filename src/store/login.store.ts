@@ -23,10 +23,15 @@ export const useLoginStore = create<State>((set) => ({
     try {
       const response = await API.patch(GET_OTP, payload);
       if (response?.data?._id) {
+        set(() => ({
+          token: response.data.accessToken,
+          isAuthenticated: true,
+        }));
         return {
           data: response?.data,
           status: true,
         };
+        
       } else {
         return {
           data: {},
@@ -52,6 +57,7 @@ export const useLoginStore = create<State>((set) => ({
       if (response?.data?.accessToken) {
         sessionStorage.setItem('token', response.data.accessToken);
         sessionStorage.setItem('user', JSON.stringify(response.data.user));
+        
         return {
           data: response?.data,
           status: true,

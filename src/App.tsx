@@ -14,8 +14,11 @@ import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import { Categories } from './pages/Categories/Categories';
 import { Toaster } from 'react-hot-toast';
+import RouteGuard from './common/RouteGuard';
+import useLoginStore from './store/login.store';
 function App() {
   const [loading, setLoading] = useState(true);
+  const {isAuthenticated} = useLoginStore();
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -53,12 +56,18 @@ function App() {
         <Route
           path="/action/categories"
           element={
+            <RouteGuard Component = {Categories}/>
+          }
+        />
+        {/* <Route
+          path="/action/categories"
+          element={
             <>
               <PageTitle title="Form Elements | TailAdmin - Tailwind CSS Admin Dashboard Template" />
               <Categories />
             </>
           }
-        />
+        /> */}
         <Route
           path="/action/userregistration"
           element={
