@@ -4,28 +4,41 @@ import { EditCategoryModal } from './EditCategoryModal';
 import { useEffect, useState } from 'react';
 import useCategoryStore from '../../store/categories.store';
 import { Link } from 'react-router-dom';
-
-
+import moment from 'moment';
+import { Category } from '../../types/category.types';
+import { AddCategoriesModal } from './AddCategoriesModal';
 export const Categories = () => {
   const {categories,getCategories} = useCategoryStore()
+  type SelectedCategory = Category | null;
+
+  
+  const [isModalEditOpen, setIsModalEditOpen] = useState(false);
+  const [isModalAddOpen, setIsModalAddOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<SelectedCategory>(null);
+
+  const openEditCategoryModal = (category:Category) => {
+    setSelectedCategory(category);
+    setIsModalEditOpen(true);
+  };
+
+  const closeEditCategoryModal = () => {
+    setIsModalEditOpen(false);
+  };
+  const openAddCategoryModal = () => {
+   
+    setIsModalAddOpen(true);
+  };
+
+  const closeAddCategoryModal = () => {
+    setIsModalAddOpen(false);
+  };
   useEffect(()=>{
     const payload = {
       isActive:true
     }
     getCategories(payload);
-  },[getCategories])
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-
-  const openModal = (category) => {
-    setSelectedCategory(category);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
+    
+  },[getCategories,selectedCategory])
   return (
     <DefaultLayout>
       <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -36,7 +49,8 @@ export const Categories = () => {
           <Link
               to="#"
               className="inline-flex items-center justify-center rounded-md bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-            > 
+              onClick={() => openAddCategoryModal()}
+           > 
              Add
             </Link> 
         </div>
@@ -72,7 +86,7 @@ export const Categories = () => {
           {categories?.map((category, key) => (
             <div
               className={`grid grid-cols-3 sm:grid-cols-5 ${
-                key === brandData.length - 1
+                key === categories?.length - 1
                   ? ''
                   : 'border-b border-stroke dark:border-strokedark'
               }`}
@@ -86,19 +100,18 @@ export const Categories = () => {
               </div>
 
               <div className="flex items-center justify-center p-2.5 xl:p-5">
-                <p className="text-black dark:text-white">{category.createon}</p>
-              </div>
+              <p className="text-black dark:text-white">{moment(category.createdAt).format('MMMM Do YYYY, h:mm:ss a')}</p>              </div>
 
               <div className="flex items-center justify-center p-2.5 xl:p-5">
                 <p className="text-meta-3">{category.isActive ? 'Yes' : 'No'}</p>
               </div>
 
               <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                <p className="text-black dark:text-white">{category.createdby}</p>
+                <p className="text-black dark:text-white">{category?.createdBy?.firstname} {category?.createdBy?.lastname}</p>
               </div>
 
               <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
-                <span onClick={() => openModal(category)}>
+                <span onClick={() => openEditCategoryModal(category)}>
                   <svg
                     className="feather feather-edit"
                     fill="none"
@@ -121,9 +134,14 @@ export const Categories = () => {
         </div>
       </div>
       <EditCategoryModal
-        open={isModalOpen}
-        onCloseModal={closeModal}
+        open={isModalEditOpen}
+        onCloseModal={closeEditCategoryModal}
         selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}
+      />{' '}
+      <AddCategoriesModal
+        open={isModalAddOpen}
+        onCloseModal={closeAddCategoryModal}
       />{' '}
     </DefaultLayout>
   );

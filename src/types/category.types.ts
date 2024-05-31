@@ -2,7 +2,10 @@ export interface Category {
   _id: string;
   name: string;
   isActive: boolean;
-  createdBy: string;
+  createdBy: {
+    firstname:string,
+    lastname:string
+  };
   createdAt: string;
   bgurl?: string; // optional property
 }
@@ -10,7 +13,26 @@ export interface Category {
 export interface CategoryTypes {
   categories: Category[];
   getCategories: (payload: { isActive: boolean }) => void;
+  updateCategory: (payload:updateDataType) => void;
+  addCategories: (payload:updateDataType) => void;
 }
 export interface getParamsType{
-  isActive?:boolean
+  isActive?:boolean;
+  createdAt:number
+}
+export interface updateDataType{
+  _id: string;
+  name: string;
+  isActive: boolean;
+}
+
+export interface Props {
+  open: boolean;
+  onCloseModal: () => void;
+  selectedCategory: any
+  setSelectedCategory: React.Dispatch<React.SetStateAction<Category | null>>;
+}
+export interface AddCategoryProps {
+  open: boolean;
+  onCloseModal: () => void;
 }
