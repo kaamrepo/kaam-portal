@@ -1,10 +1,47 @@
 import API from '../common/API';
 import { create } from 'zustand';
 import { USER } from '../common/endpoint';
-import { UserStore, UserPayload, UserData } from '../types/user.types';
+import { UserStore, UserPayload, UserData,getUserPayload } from '../types/user.types';
 
 export const useUserStore = create<UserStore>((set) => ({
   users: [],
+  getUser: async (payload: getUserPayload) => {
+    let params: Partial<getUserPayload> = {
+    };
+console.log("payload",payload);
+
+    if (payload?.type) params.type = payload.type;
+    if (payload?.skip) params.skip = payload.skip;
+    if (payload?.limit) params.limit = payload.limit;
+
+console.log("params for user",params);
+
+    try {
+      const response = await API.get(`${USER}`,{
+        params
+      });      
+    
+      if (response?.data?.data?.length) {    
+        set(() => ({
+          users: response?.data?.data,
+        }));  
+        return {
+          data: response.data,
+          status: true,
+        };
+      } else {
+        return {
+          data: [],
+          status: false,
+        };
+      }
+    } catch (error) {
+      return {
+        data: [],
+        status: false,
+      };
+    }
+  },
   patchUser: async (payload: UserPayload) => {
     let data: Partial<UserData> = {
       address: {},

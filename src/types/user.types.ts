@@ -25,6 +25,12 @@ export interface Address {
     phone:string
   }
   
+  export interface getUserPayload {
+    type: string;
+    skip?: string;
+    limit?: boolean;
+  }
+  
   export interface UserData {
     _id: string;
     email?: string;
@@ -40,6 +46,10 @@ export interface Address {
   export interface UserStore {
     users: UserData[];
     patchUser: (payload: UserPayload) => Promise<{
+      data: UserData | [];
+      status: boolean;
+    }>;
+    getUser: (payload: UserPayload) => Promise<{
       data: UserData | [];
       status: boolean;
     }>;
