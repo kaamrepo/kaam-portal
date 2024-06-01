@@ -154,7 +154,7 @@ const UserRegistrationForm = () => {
     district: yup.string().required('District is required'),
     state: yup.string().required('State is required'),
     country: yup.string().required('Country is required'),
-    gender: yu
+    gender: yup
       .string()
       .oneOf(['male', 'female', 'other'], 'Invalid gender')
       .required('Gender is required'),
@@ -200,7 +200,7 @@ const UserRegistrationForm = () => {
     },
   });
   const handleVerifyOTP = async () => {
-    setIsVerifyingOTP(true);
+    setIsVerifyingOTP(true); 
     try {
       const response = await verifyOtp(phoneNumber, otp);
       if (response?.status) {
@@ -299,7 +299,7 @@ const UserRegistrationForm = () => {
                       <button
                         type="submit"
                         disabled={isSendingOTP || (otpSent && otp.length < 4)}
-                        className={`w-full rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ${
+                        className={`w-full rounded bg-primaryBGColor p-3 font-medium text-gray hover:bg-opacity-90 ${
                           isSendingOTP || (otpSent && otp.length < 4)
                             ? 'opacity-50 cursor-not-allowed'
                             : ''

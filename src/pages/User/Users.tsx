@@ -15,6 +15,8 @@ export const Users = () => {
   const fetchUsers = async (tab) => {
     try {
       const response = await getUser({ type: tab.toLowerCase() });
+      console.log("response",response);
+      
       if (response.status) {
         setUsers(response.data.data);
       } else {
