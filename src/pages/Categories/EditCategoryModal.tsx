@@ -2,15 +2,27 @@ import moment from 'moment';
 import { Modal } from 'react-responsive-modal';
 import { Props } from '../../types/category.types';
 import useCategoryStore from '../../store/categories.store';
+import toast from 'react-hot-toast';
 export const EditCategoryModal: React.FC<Props> = ({
   open,
   onCloseModal,
   selectedCategory,
   setSelectedCategory,
 }) => {
-  const {updateCategory} = useCategoryStore()
-  const handleSubmit = () => {
-    updateCategory(selectedCategory)
+  const {updateCategory,getCategories} = useCategoryStore()
+  const handleSubmit = async () => {    
+    const response:any = await updateCategory(selectedCategory);
+    console.log("response",response);
+    if (response?.status) {
+      toast.success("Category updated successfully",{
+        position:'top-right'
+      });
+     getCategories(); 
+    }else{
+      toast.error("unable to update category")
+    }
+    onCloseModal()
+    
   };
 
   return (

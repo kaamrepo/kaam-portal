@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal } from 'react-responsive-modal';
 import { Props } from '../../types/category.types';
 import useCategoryStore from '../../store/categories.store';
+import toast from 'react-hot-toast';
 
 interface Category {
   name: string;
@@ -54,9 +55,11 @@ export const AddCategoriesModal: React.FC<Props> = ({ open, onCloseModal }) => {
     if (validCategories.length > 0) {
      const response:any =  addCategories(validCategories);
       if (response?.length !== 0) {
+        toast.success("category Added Successfully",{
+          position:'top-right'
+        })
         getCategories()
         onCloseModal();
-
       }
     }
   };
@@ -69,9 +72,7 @@ export const AddCategoriesModal: React.FC<Props> = ({ open, onCloseModal }) => {
       <div className="p-4">
         {categories.map((category, index) => (
           <div key={index} className="mb-4 flex flex-row items-center">
-            <label htmlFor={`categoryName${index}`} className="mx-2 flex text-sm font-medium text-gray-700">
-              Category Name {index + 1}
-            </label>
+           
             <input
               type="text"
               id={`categoryName${index}`}

@@ -17,13 +17,15 @@ export interface CategoryTypes {
   addCategories: (payload:updateDataType) => void;
 }
 export interface getParamsType{
+  skip?: number;
+  limit?: number;
   isActive?:boolean;
-  createdAt:number
+  createdAt?:number
 }
 export interface updateDataType{
   _id: string;
   name: string;
-  isActive: boolean;
+  isActive: any;
 }
 
 export interface Props {

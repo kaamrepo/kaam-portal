@@ -9,20 +9,20 @@ export const dashboardStore = create<DashboardStore>((set) => ({
   totalEngagements:0,
 
   getCounts: async () => {
-    try {
-      const userResponse = await API.get(USER);
-      if (response?.data?.data) {
-        set(() => ({
-            totaluser: response.data.accessToken,
+    // try {
+    //   const userResponse = await API.get(USER);
+    //   if (userResponse?.data?.data) {
+    //     set(() => ({
+    //         totaluser: userResponse.data,
           
-        }));
-    }
-    } catch (error) {
-      return {
-        data: {},
-        status: false,
-      };
-    }
+    //     }));
+    // }
+    // } catch (error) {
+    //   return {
+    //     data: {},
+    //     status: false,
+    //   };
+    // }
   },
 
 }));

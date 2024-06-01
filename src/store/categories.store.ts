@@ -6,16 +6,18 @@ import { CategoryTypes,getParamsType, updateDataType} from '../types/category.ty
 export const useCategoryStore = create<CategoryTypes>((set) => ({
   categories: [],
   getCategories: async (payload:getParamsType) => {
-    let params:getParamsType={};
-    payload.isActive ? params.isActive = payload.isActive:''
-    payload.skip ? params.skip = payload.skip:'0'
-    payload.limit? params.limit = payload.limit:'10'
+    console.log("payload in the getCategories",payload);
+    
+    let params:any={};
+    payload?.isActive ? params.isActive = payload.isActive:params.isActive=true
+    payload?.skip ? params.skip = payload.skip:'0'
+    payload?.limit? params.limit = payload.limit:'10'
     try {
       const response = await API.get(CATEGORIES,{
         params
       });      
       if (response?.data?.data?.length !== 0) {
-        console.log("in the if");
+        console.log("in the if",response);
         
         set(() => ({
           categories: response?.data?.data,
@@ -38,25 +40,22 @@ export const useCategoryStore = create<CategoryTypes>((set) => ({
     }
   },
   updateCategory: async (payload:updateDataType) => {
-    console.log("payload",payload);
+    console.log("payload in the udpate",payload);
     
     let data:updateDataType={
       _id: '',
       name: '',
-      isActive: false
+      isActive: null
     };
     data._id = payload._id;
     data.name = payload.name
-    try {
-      const response = await API.patch(`${CATEGORIES}/${data._id}`, data);      
-      console.log("response",response);
+    data.isActive = payload.isActive
 
-      if (response?.data?.data?._id) {                
-        set(() => ({
-          categories: response?.data?.data,
-        }));
+    try {
+      const response = await API.patch(`${CATEGORIES}/${data._id}`, data);            
+      if (response?.data?._id) {                
         return {
-          data: response?.data?.data,
+          data: response?.data,
           status: true,
         };
       } else {
@@ -66,6 +65,7 @@ export const useCategoryStore = create<CategoryTypes>((set) => ({
         };
       }
     } catch (error) {
+      console.log("error in updating category",error);  
       return {
         data: [],
         status: false,
