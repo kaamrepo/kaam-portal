@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout';
 import useUserStore from '../../store/user.store';
 import { UserTable } from './UserTable';
@@ -7,7 +7,6 @@ export const Users = () => {
   const [activeTab, setActiveTab] = useState('Employers');
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-
   useEffect(() => {
     fetchUsers(activeTab);
   }, [activeTab]); // Fetch users when the active tab changes

@@ -8,18 +8,15 @@ export const useUserStore = create<UserStore>((set) => ({
   getUser: async (payload: getUserPayload) => {
     let params: Partial<getUserPayload> = {
     };
-console.log("payload",payload);
-
     if (payload?.type) params.type = payload.type;
     if (payload?.skip) params.skip = payload.skip;
     if (payload?.limit) params.limit = payload.limit;
-
-console.log("params for user",params);
 
     try {
       const response = await API.get(`${USER}`,{
         params
       });      
+    console.log("response",response);
     
       if (response?.data?.data?.length) {    
         set(() => ({

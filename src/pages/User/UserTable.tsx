@@ -1,5 +1,23 @@
+import { useEffect, useState } from "react";
+import { ViewUserModal } from "./ViewUserModal";
+import useCategoryStore from '../../store/categories.store';
 
 export const UserTable = ({ users }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState<User | null>(null); // Initialize with null
+    const {categories,getCategories} = useCategoryStore()
+
+    const openUserModal = (user: User) => {
+      setSelectedUser(user);
+      setIsModalOpen(true);
+    };
+  
+    const closeUserModal = () => {
+      setIsModalOpen(false);
+    };
+    useEffect(()=>{
+        getCategories();
+      },[])
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="flex flex-row justify-between align-middle">
@@ -49,11 +67,24 @@ export const UserTable = ({ users }) => {
             </div>
 
             <div className="flex items-center justify-center p-2.5 xl:p-5">
-              <button className="text-blue-600 hover:underline">Edit</button>
+              <button  onClick={() => openUserModal(user)} className="text-blue-600 hover:underline">Edit</button>
             </div>
           </div>
         ))}
       </div>
+      <ViewUserModal
+      categories={categories}
+        isOpen={isModalOpen}
+        onClose={closeUserModal}
+        user={selectedUser}
+        onSubmit={(editedUser: User) => {
+          // Handle submitting the edited user data here
+          console.log('Edited user:', editedUser);
+          // You can make an API call to update the user data
+          // Then close the modal
+          closeUserModal();
+        }}
+      />
     </div>
   );
 };
