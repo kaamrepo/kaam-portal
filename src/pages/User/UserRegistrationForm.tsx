@@ -1,14 +1,18 @@
 import { useState, useEffect } from 'react';
 import * as yup from 'yup';
+import { useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import useLoginStore from '../../store/login.store';
 import toast from 'react-hot-toast';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import DefaultLayout from '../../layout/DefaultLayout';
 import useCategoryStore from '../../store/categories.store';
+import useUserStore from '../../store/user.store';
+import axios from 'axios';
 const UserRegistrationForm = () => {
   const { getOtp, verifyOtp, registerUser } = useLoginStore();
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [registeredUser, setregisteredUser] = useState('');
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [otp, setOtp] = useState('');
@@ -16,35 +20,63 @@ const UserRegistrationForm = () => {
   const [isVerifyingOTP, setIsVerifyingOTP] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
-  const [categories, setCategories] = useState([]);
-  const { getCategories } = useCategoryStore();
+  const { getCategories, categories} = useCategoryStore();
+  const {patchUser} = useUserStore();
+  const [cities, setCities] = useState([]);
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (otpVerified) {
       // Fetch categories once OTP is verified
+      console.log("categories",categories);
+      
       fetchCategories();
     }
   }, [otpVerified]);
+  const getAddressDateByZIPCode = async (zipCode, setFieldValue, setCities) => {
+    try {
+      const res = await axios.get(
+        `https://api.postalpincode.in/pincode/${zipCode}`,
+      );
+      console.log('pin code response', res);
+
+      if (res.data[0].Status === 'Success') {
+        setFieldValue('district', res.data[0]?.PostOffice[0]?.District);
+        setFieldValue('state', res.data[0]?.PostOffice[0]?.State);
+        setFieldValue('country', res.data[0]?.PostOffice[0]?.Country);
+
+        let placeSet = new Set();
+        res.data[0]?.PostOffice.forEach((p) => {
+          placeSet.add(p?.Block);
+          placeSet.add(p?.Division);
+        });
+
+        setCities(Array.from(placeSet).map((d, i) => ({ label: d, value: d })));
+      } else {
+        toast.error('Invalid ZIP Code.');
+      }
+    } catch (error) {
+      toast.error('Invalid ZIP Code.');
+    }
+  };
+  const handlePinCodeChange = async (e) => {
+    const { value } = e.target;
+    formik.handleChange(e);
+    if (value && value.length === 6) {
+      await getAddressDateByZIPCode(value, formik.setFieldValue, setCities);
+    }
+  };
 
   const fetchCategories = async () => {
     try {
-      const response = getCategories(); // Adjust the endpoint as necessary
-      console.log('respinse of category in user');
-
-      if (response) {
-        setCategories(response.data.data);
-      } else {
-        toast.error('Failed to fetch categories');
-      }
+     getCategories(); // Adjust the endpoint as necessary
     } catch (error) {
-      console.error('Error fetching categories:', error);
       toast.error('Failed to fetch categories');
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('in the hanglesubmit');
-
     // Perform form validation
     if (
       firstName.trim() === '' ||
@@ -54,8 +86,6 @@ const UserRegistrationForm = () => {
       toast.error('Please check mandatory feilds', {
         position: 'top-right',
       });
-      console.log('empty fiesl');
-
       return;
     }
     setIsSendingOTP(true);
@@ -69,13 +99,14 @@ const UserRegistrationForm = () => {
         phone: phoneNumber,
       });
       // Once user is registered, send OTP
-      console.log('registerReposne', registerResponse);
-
       const payload = {
         dialcode: '+91',
         phone: phoneNumber,
       };
+      console.log("registered user",registerResponse);
+      
       if (registerResponse.status) {
+        setregisteredUser(registerResponse?.data?.data?._id)
         const response = await getOtp(payload);
         if (response?.status) {
           setOtpSent(true);
@@ -149,11 +180,23 @@ const UserRegistrationForm = () => {
       gender: 'male',
       aboutMe: '',
       categories: [],
+      phone:'',
     },
     validationSchema,
-    onSubmit: (values) => {
+    onSubmit: async (values:any) => {
       console.log('Form Values:', values);
-      // Handle form submission
+      values.phone = phoneNumber;
+      values._id = registeredUser;
+     const response = await patchUser(values)
+      console.log("response post submit",response);
+      if (response.status) {
+        toast.success("Details Updated Successfully");
+        navigate('/action/users')
+      }
+      else{
+      toast.error("Unable to Update User Details")
+      }
+      
     },
   });
   const handleVerifyOTP = async () => {
@@ -294,7 +337,8 @@ const UserRegistrationForm = () => {
                         placeholder="Enter your first name"
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        value={formik.values.firstName}
+                        value={firstName}
+                        disabled={true}
                         className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
                           formik.errors.firstName && formik.touched.firstName
                             ? 'border-red-500'
@@ -318,7 +362,8 @@ const UserRegistrationForm = () => {
                         placeholder="Enter your last name"
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        value={formik.values.lastName}
+                        value={lastName}
+                        disabled={true}
                         className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
                           formik.errors.lastName && formik.touched.lastName
                             ? 'border-red-500'
@@ -468,7 +513,7 @@ const UserRegistrationForm = () => {
                       type="text"
                       name="pinCode"
                       placeholder="Enter your PIN code"
-                      onChange={formik.handleChange}
+                      onChange={handlePinCodeChange}
                       onBlur={formik.handleBlur}
                       value={formik.values.pinCode}
                       className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
@@ -489,10 +534,8 @@ const UserRegistrationForm = () => {
                       <label className="mb-2.5 block text-black dark:text-white">
                         City
                       </label>
-                      <input
-                        type="text"
+                      <select
                         name="city"
-                        placeholder="Enter your city"
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.city}
@@ -501,7 +544,14 @@ const UserRegistrationForm = () => {
                             ? 'border-red-500'
                             : ''
                         }`}
-                      />
+                      >
+                        <option value="">Select your city</option>
+                        {cities.map((city, index) => (
+                          <option key={index} value={city.value}>
+                            {city.label}
+                          </option>
+                        ))}
+                      </select>
                       {formik.errors.city && formik.touched.city && (
                         <div className="text-red-500">{formik.errors.city}</div>
                       )}
@@ -531,7 +581,6 @@ const UserRegistrationForm = () => {
                       )}
                     </div>
                   </div>
-
                   <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                     <div className="w-full xl:w-1/2">
                       <label className="mb-2.5 block text-black dark:text-white">
@@ -556,7 +605,6 @@ const UserRegistrationForm = () => {
                         </div>
                       )}
                     </div>
-
                     <div className="w-full xl:w-1/2">
                       <label className="mb-2.5 block text-black dark:text-white">
                         Country
@@ -650,6 +698,7 @@ const UserRegistrationForm = () => {
                   <div className="mb-4.5">
                     <label className="mb-2.5 block text-black dark:text-white">
                       Categories
+                      <p>User specific categories to post or search jobs</p>
                     </label>
                     <div className="flex flex-wrap">
                       {categories.map((category) => (
@@ -660,10 +709,10 @@ const UserRegistrationForm = () => {
                           <input
                             type="checkbox"
                             name="categories"
-                            value={category.id}
+                            value={category?._id}
                             onChange={formik.handleChange}
                             checked={formik.values.categories.includes(
-                              category.id,
+                              category._id,
                             )}
                             className="mr-2"
                           />

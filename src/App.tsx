@@ -14,6 +14,7 @@ import { Categories } from './pages/Categories/Categories';
 import { Toaster } from 'react-hot-toast';
 import RouteGuard from './common/RouteGuard';
 import useLoginStore from './store/login.store';
+import { Users } from './pages/User/Users';
 
 function App() {
   const { isAuthenticated } = useLoginStore();
@@ -64,6 +65,15 @@ function App() {
           element={
             <RouteGuard
               Component={UserRegistrationForm}
+              isAuthenticated={isAuthenticated}
+            />
+          }
+        />
+        <Route
+          path="/action/users"
+          element={
+            <RouteGuard
+              Component={Users}
               isAuthenticated={isAuthenticated}
             />
           }

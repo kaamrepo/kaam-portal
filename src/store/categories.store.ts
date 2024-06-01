@@ -16,9 +16,7 @@ export const useCategoryStore = create<CategoryTypes>((set) => ({
       const response = await API.get(CATEGORIES,{
         params
       });      
-      if (response?.data?.data?.length !== 0) {
-        console.log("in the if",response);
-        
+      if (response?.data?.data?.length !== 0) {        
         set(() => ({
           categories: response?.data?.data,
         }));
