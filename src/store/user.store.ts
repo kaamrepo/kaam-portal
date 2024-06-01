@@ -40,18 +40,31 @@ export const useUserStore = create<UserStore>((set) => ({
     }
   },
   patchUser: async (payload: UserPayload) => {
+    console.log("payload in patchuser",payload);
+    
     let data: Partial<UserData> = {
       address: {},
     };
 
-    if (payload?.email) data.email = payload.email;
-    if (payload?.isActive) data.activeforjobs = payload.isActive;
+    if (payload?._id) data._id = payload._id;
+    if (payload?.phone) data.phone = payload.phone;
+    if (payload?.lastname) data.lastname = payload.lastname;
+    if (payload?.firstname) data.firstname = payload.firstname;
+    if (payload?.dialcode) data.dialcode = payload.dialcode;
+    if (payload?.activeforjobs) data.activeforjobs = payload.activeforjobs;
+    if (payload?.isactive) data.isactive = payload.isactive;
+    if (payload?.createdat) data.createdat = payload.createdat;
+    if (payload?.updatedat) data.updatedat = payload.updatedat;
+    if (payload?.firebasetokens) data.firebasetokens = payload.firebasetokens;
+    if (payload?.coordinates) data.coordinates = payload.coordinates;
+    if (payload?.otpexpiresat) data.otpexpiresat = payload.otpexpiresat;
+    if (payload?.isActiveforJobs) data.activeforjobs = payload.isActiveforJobs;
     // if (payload?.role) data.role = payload.role;
     if (payload?.dob) data.dateofbirth = new Date(payload.dob);
     if (payload?.address) {
       data.address = {
         addressline: payload.address,
-        pincode: payload.pinCode,
+        pincode: payload.pincode,
         district: payload.district,
         state: payload.state,
         country: payload.country,

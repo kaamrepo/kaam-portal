@@ -22,7 +22,8 @@ export interface Address {
     gender?: string;
     aboutMe?: string;
     categories?: string[];
-    phone:string
+    phone:string;
+    isActiveforJobs:boolean
   }
   
   export interface getUserPayload {

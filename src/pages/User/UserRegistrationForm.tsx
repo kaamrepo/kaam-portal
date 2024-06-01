@@ -142,19 +142,19 @@ const UserRegistrationForm = () => {
 
   const validationSchema = yup.object({
     email: yup.string().email('Invalid email address'),
-    isActive: yup.boolean().required('Active status is required'),
+    isActiveforJobs: yup.boolean().required('Active status is required'),
     role: yup
       .string()
       .oneOf(['employer', 'employee'], 'Invalid role')
       .required('Role is required'),
     dob: yup.date().required('Date of birth is required'),
     address: yup.string().required('Address is required'),
-    pinCode: yup.string().required('PIN code is required'),
+    pincode: yup.string().required('PIN code is required'),
     city: yup.string().required('City is required'),
     district: yup.string().required('District is required'),
     state: yup.string().required('State is required'),
     country: yup.string().required('Country is required'),
-    gender: yup
+    gender: yu
       .string()
       .oneOf(['male', 'female', 'other'], 'Invalid gender')
       .required('Gender is required'),
@@ -168,11 +168,11 @@ const UserRegistrationForm = () => {
   const formik = useFormik({
     initialValues: {
       email: '',
-      isActive: true,
+      isActiveforJobs: true,
       role: 'employee',
       dob: '',
       address: '',
-      pinCode: '',
+      pincode: '',
       city: '',
       district: '',
       state: '',
@@ -411,27 +411,27 @@ const UserRegistrationForm = () => {
                         <label className="mr-2">
                           <input
                             type="radio"
-                            name="isActive"
+                            name="isActiveforJobs"
                             value="true"
                             onChange={formik.handleChange}
-                            checked={formik.values.isActive === true}
+                            checked={formik.values.isActiveforJobs === true}
                           />{' '}
                           Yes
                         </label>
                         <label className="ml-2">
                           <input
                             type="radio"
-                            name="isActive"
+                            name="isActiveforJobs"
                             value="false"
                             onChange={formik.handleChange}
-                            checked={formik.values.isActive === false}
+                            checked={formik.values.isActiveforJobs === false}
                           />{' '}
                           No
                         </label>
                       </div>
-                      {formik.errors.isActive && formik.touched.isActive && (
+                      {formik.errors.isActiveforJobs && formik.touched.isActiveforJobs && (
                         <div className="text-red-500">
-                          {formik.errors.isActive}
+                          {formik.errors.isActiveforJobs}
                         </div>
                       )}
                     </div>
@@ -511,20 +511,20 @@ const UserRegistrationForm = () => {
                     </label>
                     <input
                       type="text"
-                      name="pinCode"
+                      name="pincode"
                       placeholder="Enter your PIN code"
                       onChange={handlePinCodeChange}
                       onBlur={formik.handleBlur}
-                      value={formik.values.pinCode}
+                      value={formik.values.pincode}
                       className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
-                        formik.errors.pinCode && formik.touched.pinCode
+                        formik.errors.pincode && formik.touched.pincode
                           ? 'border-red-500'
                           : ''
                       }`}
                     />
-                    {formik.errors.pinCode && formik.touched.pinCode && (
+                    {formik.errors.pincode && formik.touched.pincode && (
                       <div className="text-red-500">
-                        {formik.errors.pinCode}
+                        {formik.errors.pincode}
                       </div>
                     )}
                   </div>

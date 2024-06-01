@@ -78,14 +78,17 @@ export const ViewUserModal: React.FC<Props> = ({
     if (editedUser) {
       const updatedUser = {
         ...editedUser,
-        _id: { "$oid": editedUser._id },
-        createdat: { "$date": editedUser.createdat },
-        updatedat: { "$date": new Date().toISOString() },
-        otpexpiresat: { "$date": editedUser.otpexpiresat },
-        tags: Object.keys(checkedCategories)
+        _id:  editedUser._id ,
+        createdat: editedUser.createdat,
+        updatedat:new Date().toISOString(),
+        dob:editedUser.dateofbirth,
+        isActiveforJobs:editedUser.activeforjobs,
+        otpexpiresat:  editedUser.otpexpiresat,
+        categories: Object.keys(checkedCategories)
           .filter(key => checkedCategories[key])
-          .map(tagId => ({ "$oid": tagId })),
+          .map(tagId => ( tagId )),
       };
+      await patchUser(updatedUser);
   
       console.log('Payload to be sent to API:', updatedUser);
   
@@ -273,11 +276,11 @@ export const ViewUserModal: React.FC<Props> = ({
                     About {editedUser?.firstname} {editedUser?.lastname}
                   </label>
                   <textarea
-                    name="aboutme"
+                    name="aboutMe"
                     rows={6}
                     placeholder="Type your message"
                     onChange={handleChange}
-                    value={editedUser?.aboutme || ''}
+                    value={editedUser?.aboutMe || ''}
                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary`}
                   />
                 </div>
