@@ -6,6 +6,7 @@
    setToken: (token: string) => void;
    setLoaderState: (status: boolean) => void;
    getOtp: (payload: {}) => void;
+   logout: () => void;
    verifyOtp: (phone: string, otp: string) => void;
  }
  

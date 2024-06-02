@@ -15,9 +15,7 @@ export const useUserStore = create<UserStore>((set) => ({
     try {
       const response = await API.get(`${USER}`,{
         params
-      });      
-    console.log("response",response);
-    
+      });          
       if (response?.data?.data?.length) {    
         set(() => ({
           users: response?.data?.data,

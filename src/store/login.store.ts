@@ -5,13 +5,13 @@ import { LoginResponse, LoginType } from '../types/login.types';
 
 export const useLoginStore = create<LoginType>((set) => ({
   isAuthenticated: false,
+  user:{},
   token: null,
   loaderState: false,
   setLoaderState: (status) => set(() => ({ loaderState: status })),
   setToken: (token) =>
     set((state) => ({ ...state, token, isAuthenticated: !!token })),
   registerUser: async (payload) => {
-    console.log('payload to register user', payload);
     const params: any = {};
     params.dialcode = payload.dialcode;
     params.firstname = payload.firstName;
@@ -19,8 +19,6 @@ export const useLoginStore = create<LoginType>((set) => ({
     params.phone = payload.phone;
     try {
       const response = await API.post(REGISTER_USER, params);
-      console.log('response to register user', response);
-
       if (response?.data?._id) {
         return {
           data: response,
@@ -68,6 +66,27 @@ export const useLoginStore = create<LoginType>((set) => ({
       };
     }
   },
+  logout: async () => {
+    try {      
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      set(() => ({
+        user: {},
+        isAuthenticated: false,
+      }));
+    
+        return {
+          data: {},
+          status: true,
+        };
+      
+    } catch (error) {
+      return {
+        data: {},
+        status: false,
+      };
+    }
+  },
   verifyOtp: async (phone, otp) => {
     try {
       let data = {
@@ -80,7 +99,10 @@ export const useLoginStore = create<LoginType>((set) => ({
       if (response?.data?.accessToken) {
         localStorage.setItem('token', response.data.accessToken);
         localStorage.setItem('user', JSON.stringify(response.data.user));
-
+        set(() => ({
+          user: response?.data?.user,
+          isAuthenticated: true,
+        }));
         return {
           data: response?.data,
           status: true,

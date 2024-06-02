@@ -27,7 +27,7 @@ export const EditCategoryModal: React.FC<Props> = ({
   };
 
   return (
-<DefaultLayout>
+
     <Modal
       open={open}
       onClose={onCloseModal}
@@ -115,6 +115,5 @@ export const EditCategoryModal: React.FC<Props> = ({
             </div>
 
     </Modal>
-    </DefaultLayout>
   );
 };

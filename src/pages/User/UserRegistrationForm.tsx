@@ -730,7 +730,7 @@ const UserRegistrationForm = () => {
                   <button
                     type="submit"
                     disabled={!formik.isValid || formik.isSubmitting}
-                    className={`w-full rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90 ${
+                    className={`w-full rounded bg-primaryBGColor p-3 font-medium text-gray hover:bg-opacity-90 ${
                       !formik.isValid || formik.isSubmitting
                         ? 'opacity-50 cursor-not-allowed'
                         : ''

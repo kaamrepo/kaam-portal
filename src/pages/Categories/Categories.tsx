@@ -130,7 +130,7 @@ export const Categories = () => {
                 </span>
               </div>
             </div>
-          ))}
+          ))} 
         </div>
       </div>
       <EditCategoryModal
