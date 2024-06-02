@@ -7,9 +7,6 @@ import DashboardPage from './pages/Dashboard/DashboardPage';
 import FormElements from './pages/Form/FormElements';
 import UserRegistrationForm from './pages/User/UserRegistrationForm';
 import FormLayout from './pages/Form/FormLayout';
-import Tables from './pages/Tables';
-import Alerts from './pages/UiElements/Alerts';
-import Buttons from './pages/UiElements/Buttons';
 import { Categories } from './pages/Categories/Categories';
 import { Toaster } from 'react-hot-toast';
 import RouteGuard from './common/RouteGuard';
@@ -85,24 +82,6 @@ function App() {
               Component={FormLayout}
               isAuthenticated={isAuthenticated}
             />
-          }
-        />
-        <Route
-          path="/tables"
-          element={
-            <RouteGuard Component={Tables} isAuthenticated={isAuthenticated} />
-          }
-        />
-        <Route
-          path="/ui/alerts"
-          element={
-            <RouteGuard Component={Alerts} isAuthenticated={isAuthenticated} />
-          }
-        />
-        <Route
-          path="/ui/buttons"
-          element={
-            <RouteGuard Component={Buttons} isAuthenticated={isAuthenticated} />
           }
         />
       </Routes>

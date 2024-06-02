@@ -206,7 +206,6 @@ const UserRegistrationForm = () => {
       if (response?.status) {
         setOtpVerified(true);
         console.log('OTP verified successfully');
-        // Navigate to the next step or enable the next fields
         toast.success('OTP verified', {
           position: 'top-right',
         });
