@@ -36,6 +36,7 @@ export const Users = () => {
   const filteredUsers = users.filter(user => {
     const fullName = `${user.firstname} ${user.lastname}`.toLowerCase();
     return fullName.includes(searchTerm.toLowerCase());
+    // Make API calls
   });
 
   return (
@@ -87,7 +88,7 @@ export const Users = () => {
       </div>
 
       {/* Search input */}
-      <div className="mt-4 mb-8 mx-auto max-w-md">
+      <div className="mt-3 w-100 mb-2.5 flex text-black dark:text-white">
         <input
           type="text"
           placeholder="Search users..."

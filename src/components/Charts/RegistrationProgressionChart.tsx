@@ -1,7 +1,6 @@
 import { ApexOptions } from 'apexcharts';
 import React, { useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import { primaryBGColor } from '../../common/colors';
 const options: ApexOptions = {
   legend: {
     show: false,
@@ -119,7 +118,7 @@ interface RegistrationProgressionChartState {
 }
 
 const RegistrationProgressionChart: React.FC = () => {
-  const [timeframe, setTimeframe] = useState<'Day' | 'Week' | 'Month'>('Month');
+  const [timeframe, setTimeframe] = useState<'Day' | 'Week' | 'Month' |'Year'>('Month');
   const [state, setState] = useState<RegistrationProgressionChartState>({
     series: [
       {
@@ -132,7 +131,7 @@ const RegistrationProgressionChart: React.FC = () => {
     ],
   });
 
-  const handleTimeframeChange = (newTimeframe: 'Day' | 'Week' | 'Month') => {
+  const handleTimeframeChange = (newTimeframe: 'Day' | 'Week' | 'Month' | 'Year') => {
     let newSeriesData: number[] = [];
     let newCategories: string[] = [];
 
@@ -155,6 +154,12 @@ const RegistrationProgressionChart: React.FC = () => {
         newSeriesData = [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45];
         newCategories = [
           'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'
+        ];
+        break;
+      case 'Year':
+        newSeriesData = [23, 121];
+        newCategories = [
+          '2024', '2023'
         ];
         break;
     }
@@ -208,6 +213,14 @@ const RegistrationProgressionChart: React.FC = () => {
   onClick={() => handleTimeframeChange('Month')}
 >
   Month
+</button>
+<button
+  className={`rounded py-1 px-3 text-xs font-medium text-black hover:bg-white hover:shadow-card dark:text-white dark:hover:bg-boxdark ${
+    timeframe === 'Year' ? 'bg-primaryBGColor text-white' : ''
+  }`}
+  onClick={() => handleTimeframeChange('Year')}
+>
+  Year
 </button>
 
 </div>

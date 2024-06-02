@@ -8,7 +8,6 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   user: User | null;
-  onSubmit: (editedUser: User) => void;
   categories:
     | Array<{ _id: string; name: string; isActive: boolean }>
     | undefined;
@@ -18,7 +17,6 @@ export const ViewUserModal: React.FC<Props> = ({
   isOpen,
   onClose,
   user,
-  onSubmit,
   categories,
 }) => {
   const [editedUser, setEditedUser] = useState<User | null>(null);
@@ -26,18 +24,12 @@ export const ViewUserModal: React.FC<Props> = ({
     Record<string, boolean>
   >({});
   const { patchUser } = useUserStore();
-  // Function to handle checkbox change
-
-  // Initialize editedUser with user data
   useEffect(() => {
     if (user) {
       setEditedUser({ ...user });
-      // Reset checkedCategories when user changes
       setCheckedCategories({});
     }
   }, [user]);
-  // Handle form field changes
-  // Handle form field changes
   const handleChange = (e) => {
     const { name, value,type } = e.target;
     if (type === 'radio' && name === 'activeforjobs') {
@@ -46,13 +38,11 @@ export const ViewUserModal: React.FC<Props> = ({
           [name]: value === 'true',
         }));
       } else {
-        // Handle other fields
         setEditedUser((prevState) => ({
           ...prevState,
           [name]: value,
         }));
       }
-    // Check if the field is part of the address object
     if (['addressline', 'pincode', 'city', 'district'].includes(name)) {
       setEditedUser((prevState) => ({
         ...prevState,
@@ -62,7 +52,6 @@ export const ViewUserModal: React.FC<Props> = ({
         },
       }));
     } else {
-      // Update other fields including aboutMe
       setEditedUser((prevState) => ({
         ...prevState,
         [name]: value,
@@ -89,16 +78,11 @@ export const ViewUserModal: React.FC<Props> = ({
           .map(tagId => ( tagId )),
       };
       await patchUser(updatedUser);
-  
-      console.log('Payload to be sent to API:', updatedUser);
-  
-      // Uncomment the line below to submit the form
-      // await onSubmit(updatedUser);
+      onClose();
     }
   };
   
   useEffect(() => {
-    // Initialize checkedCategories based on user tags
     const initialCheckedCategories = {};
     categories.forEach((category) => {
       initialCheckedCategories[category._id] = user?.tags?.some(

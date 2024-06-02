@@ -3,6 +3,7 @@ import { Modal } from 'react-responsive-modal';
 import { Props } from '../../types/category.types';
 import useCategoryStore from '../../store/categories.store';
 import toast from 'react-hot-toast';
+import DefaultLayout from '../../layout/DefaultLayout';
 export const EditCategoryModal: React.FC<Props> = ({
   open,
   onCloseModal,
@@ -26,6 +27,7 @@ export const EditCategoryModal: React.FC<Props> = ({
   };
 
   return (
+<DefaultLayout>
     <Modal
       open={open}
       onClose={onCloseModal}
@@ -113,5 +115,6 @@ export const EditCategoryModal: React.FC<Props> = ({
             </div>
 
     </Modal>
+    </DefaultLayout>
   );
 };
