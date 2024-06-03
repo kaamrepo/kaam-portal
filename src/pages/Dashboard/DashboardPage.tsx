@@ -4,7 +4,7 @@ import RegistrationProgressionChart from '../../components/Charts/RegistrationPr
 import UserBifercationCharte from '../../components/Charts/UserBifercationChart';
 import DefaultLayout from '../../layout/DefaultLayout';
 import TableZoneWiseCount from '../../components/Tables/TableZoneWiseCount';
-import dashboardStore from '../../store/Dashboard.store';
+import dashboardStore from '../../store/dashboard.store';
 import { useEffect } from 'react';
 const DashboardPage = () => {
   const {getCounts,totaluser,totalPostedJobs,totalAppliedJobs,totalEngagements} = dashboardStore();

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import useLoginStore from '../../store/login.store';
-import UserOne from '../../images/user/user-01.png';
 import toast from 'react-hot-toast';
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -63,8 +62,8 @@ console.log("before calls");
         className="flex items-center gap-4"
         to="#"
       >
-        <span className="h-12 w-12 rounded-full">
-          <img src={UserOne} alt="User" />
+        <span className="h-12 w-12 rounded-full border-2">
+          {/* <img src={UserOne} alt="User" /> */} image
         </span>
 
         <svg

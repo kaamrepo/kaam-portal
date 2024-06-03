@@ -2,7 +2,6 @@
 import { useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import SignIn from './pages/Authentication/SignIn';
-import SignUp from './pages/Authentication/SignUp';
 import DashboardPage from './pages/Dashboard/DashboardPage';
 import UserRegistrationForm from './pages/User/UserRegistrationForm';
 import { Categories } from './pages/Categories/Categories';
@@ -25,8 +24,6 @@ function App() {
       <Routes>
         {/* Non-protected routes */}
         <Route path="/auth/signin" element={<SignIn />} />
-        <Route path="/auth/signup" element={<SignUp />} />
-
         {/* Protected routes with RouteGuard */}
         <Route
           path="/"
