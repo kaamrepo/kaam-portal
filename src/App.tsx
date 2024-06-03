@@ -4,9 +4,7 @@ import { Route, Routes, useLocation } from 'react-router-dom';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import DashboardPage from './pages/Dashboard/DashboardPage';
-import FormElements from './pages/Form/FormElements';
 import UserRegistrationForm from './pages/User/UserRegistrationForm';
-import FormLayout from './pages/Form/FormLayout';
 import { Categories } from './pages/Categories/Categories';
 import { Toaster } from 'react-hot-toast';
 import RouteGuard from './common/RouteGuard';
@@ -40,15 +38,6 @@ function App() {
           }
         />
         <Route
-          path="/action/form-elements"
-          element={
-            <RouteGuard
-              Component={FormElements}
-              isAuthenticated={isAuthenticated}
-            />
-          }
-        />
-        <Route
           path="/action/categories"
           element={
             <RouteGuard
@@ -71,15 +60,6 @@ function App() {
           element={
             <RouteGuard
               Component={Users}
-              isAuthenticated={isAuthenticated}
-            />
-          }
-        />
-        <Route
-          path="/action/form-layout"
-          element={
-            <RouteGuard
-              Component={FormLayout}
               isAuthenticated={isAuthenticated}
             />
           }
