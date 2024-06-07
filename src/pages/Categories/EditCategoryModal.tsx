@@ -1,33 +1,31 @@
-import moment from 'moment';
-import { Modal } from 'react-responsive-modal';
-import { Props } from '../../types/category.types';
-import useCategoryStore from '../../store/categories.store';
-import toast from 'react-hot-toast';
-import DefaultLayout from '../../layout/DefaultLayout';
+import moment from "moment";
+import { Modal } from "react-responsive-modal";
+import { Props } from "../../types/category.types";
+import useCategoryStore from "../../store/categories.store";
+import toast from "react-hot-toast";
+import DefaultLayout from "../../layout/DefaultLayout";
 export const EditCategoryModal: React.FC<Props> = ({
   open,
   onCloseModal,
   selectedCategory,
   setSelectedCategory,
 }) => {
-  const {updateCategory,getCategories} = useCategoryStore()
-  const handleSubmit = async () => {    
-    const response:any = await updateCategory(selectedCategory);
-    console.log("response",response);
+  const { updateCategory, getCategories } = useCategoryStore();
+  const handleSubmit = async () => {
+    const response: any = await updateCategory(selectedCategory);
+    console.log("response", response);
     if (response?.status) {
-      toast.success("Category updated successfully",{
-        position:'top-right'
+      toast.success("Category updated successfully", {
+        position: "top-right",
       });
-     getCategories(); 
-    }else{
-      toast.error("unable to update category")
+      getCategories({ searchOn: { isActive: true } });
+    } else {
+      toast.error("unable to update category");
     }
-    onCloseModal()
-    
+    onCloseModal();
   };
 
   return (
-
     <Modal
       open={open}
       onClose={onCloseModal}
@@ -56,7 +54,7 @@ export const EditCategoryModal: React.FC<Props> = ({
         </div>
       </div>
       <div
-        className={`grid grid-cols-4 sm:grid-cols-4 ${'border-b border-stroke dark:border-strokedark'}`}
+        className={`grid grid-cols-4 sm:grid-cols-4 ${"border-b border-stroke dark:border-strokedark"}`}
       >
         <div className="flex items-center gap-4 p-2.5 xl:p-5">
           <div className="relative flex-1">
@@ -77,18 +75,18 @@ export const EditCategoryModal: React.FC<Props> = ({
 
         <div className="flex items-center justify-center p-2.5 xl:p-5">
           <p className="text-black dark:text-white">
-            {moment(selectedCategory?.createdAt).format('MMMM Do YYYY')}
+            {moment(selectedCategory?.createdAt).format("MMMM Do YYYY")}
           </p>
         </div>
 
         <div className="flex items-center justify-center p-2.5 xl:p-5">
           <select
             className="form-select text-meta-3"
-            value={selectedCategory?.isActive ? 'true' : 'false'}
+            value={selectedCategory?.isActive ? "true" : "false"}
             onChange={(e) =>
               setSelectedCategory({
                 ...selectedCategory,
-                isActive: e.target.value === 'true',
+                isActive: e.target.value === "true",
               })
             }
           >
@@ -99,21 +97,19 @@ export const EditCategoryModal: React.FC<Props> = ({
 
         <div className="hidden items-center justify-center p-2.5 sm:flex xl:p-5">
           <p className="text-black dark:text-white">
-            {selectedCategory?.createdBy?.firstname}{' '}
+            {selectedCategory?.createdBy?.firstname}{" "}
             {selectedCategory?.createdBy?.lastname}
           </p>
         </div>
       </div>
-      <div className='flex justify-end'>
-      <button
-             
-              className="inline-flex items-center justify-center rounded-md bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-              onClick={handleSubmit}
-            > 
-             Submit
-            </button> 
-            </div>
-
+      <div className="flex justify-end">
+        <button
+          className="inline-flex items-center justify-center rounded-md bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+          onClick={handleSubmit}
+        >
+          Submit
+        </button>
+      </div>
     </Modal>
   );
 };

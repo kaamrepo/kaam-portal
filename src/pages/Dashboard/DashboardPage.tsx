@@ -1,21 +1,25 @@
-
-import CardDataStats from '../../components/CardDataStats';
-import RegistrationProgressionChart from '../../components/Charts/RegistrationProgressionChart';
-import UserBifercationCharte from '../../components/Charts/UserBifercationChart';
-import DefaultLayout from '../../layout/DefaultLayout';
-import TableZoneWiseCount from '../../components/Tables/TableZoneWiseCount';
-import dashboardStore from '../../store/dashboard.store';
-import { useEffect } from 'react';
+import CardDataStats from "../../components/CardDataStats";
+import RegistrationProgressionChart from "../../components/Charts/RegistrationProgressionChart";
+import UserBifercationCharte from "../../components/Charts/UserBifercationChart";
+import DefaultLayout from "../../layout/DefaultLayout";
+import TableZoneWiseCount from "../../components/Tables/TableZoneWiseCount";
+import dashboardStore from "../../store/Dashboard.store";
+import { useEffect } from "react";
 const DashboardPage = () => {
-  const {getCounts,totaluser,totalPostedJobs,totalAppliedJobs,totalEngagements} = dashboardStore();
-  useEffect(()=>{
+  const {
+    getCounts,
+    totaluser,
+    totalPostedJobs,
+    totalAppliedJobs,
+    totalEngagements,
+  } = dashboardStore();
+  useEffect(() => {
     getCounts();
-  },[])
+  }, []);
   return (
     <DefaultLayout>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-3">
-        {' '}
-       
+        {" "}
         <CardDataStats title="Total Users" total="10000">
           <svg
             className="fill-primary dark:fill-white"
@@ -95,11 +99,10 @@ const DashboardPage = () => {
       </div>
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-              <UserBifercationCharte />
+        <UserBifercationCharte />
         <TableZoneWiseCount></TableZoneWiseCount>
-        <RegistrationProgressionChart />        
+        <RegistrationProgressionChart />
       </div>
-    
     </DefaultLayout>
   );
 };

@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Modal } from 'react-responsive-modal';
-import { Props } from '../../types/category.types';
-import useCategoryStore from '../../store/categories.store';
-import toast from 'react-hot-toast';
+import React, { useEffect, useState } from "react";
+import { Modal } from "react-responsive-modal";
+import { Props } from "../../types/category.types";
+import useCategoryStore from "../../store/categories.store";
+import toast from "react-hot-toast";
 
 interface Category {
   name: string;
@@ -11,22 +11,27 @@ interface Category {
 }
 
 export const AddCategoriesModal: React.FC<Props> = ({ open, onCloseModal }) => {
-  const { addCategories,getCategories } = useCategoryStore();
-  const [categories, setCategories] = useState<Category[]>([{ name: '', image: '', preview: '' }]);
+  const { addCategories, getCategories } = useCategoryStore();
+  const [categories, setCategories] = useState<Category[]>([
+    { name: "", image: "", preview: "" },
+  ]);
 
   useEffect(() => {
     if (open) {
-      setCategories([{ name: '', image: '', preview: '' }]);
+      setCategories([{ name: "", image: "", preview: "" }]);
     }
   }, [open]);
 
   const handleCategoryChange = (index: number, value: string, type: string) => {
-    const newCategories = [...categories];
+    const newCategories: any = [...categories];
     newCategories[index][type] = value;
     setCategories(newCategories);
   };
 
-  const handleImageUpload = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (
+    index: number,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files && e.target.files[0];
     if (file) {
       const reader = new FileReader();
@@ -41,7 +46,7 @@ export const AddCategoriesModal: React.FC<Props> = ({ open, onCloseModal }) => {
   };
 
   const handleAddCategory = () => {
-    setCategories([...categories, { name: '', image: '', preview: '' }]);
+    setCategories([...categories, { name: "", image: "", preview: "" }]);
   };
 
   const handleDeleteCategory = (index: number) => {
@@ -51,34 +56,44 @@ export const AddCategoriesModal: React.FC<Props> = ({ open, onCloseModal }) => {
   };
 
   const handleSubmit = () => {
-    const validCategories = categories.filter(category => category.name.trim() !== '' && category.image.trim() !== '');
+    const validCategories: any = categories.filter(
+      (category) => category.name.trim() !== "" && category.image.trim() !== ""
+    );
     if (validCategories.length > 0) {
-     const response:any =  addCategories(validCategories);
+      const response: any = addCategories(validCategories);
       if (response?.length !== 0) {
-        toast.success("category Added Successfully",{
-          position:'top-right'
-        })
-        getCategories()
+        toast.success("category Added Successfully", {
+          position: "top-right",
+        });
+        getCategories({ searchOn: { isActive: true } });
         onCloseModal();
       }
     }
   };
 
-  const isSubmitDisabled = categories.every(category => category.name.trim() === '' || category.image.trim() === '');
+  const isSubmitDisabled = categories.every(
+    (category) => category.name.trim() === "" || category.image.trim() === ""
+  );
 
   return (
-    <Modal open={open} onClose={onCloseModal} closeOnOverlayClick={false} center>
+    <Modal
+      open={open}
+      onClose={onCloseModal}
+      closeOnOverlayClick={false}
+      center
+    >
       <h2>Add Categories</h2>
       <div className="p-4">
         {categories.map((category, index) => (
           <div key={index} className="mb-4 flex flex-row items-center">
-           
             <input
               type="text"
               id={`categoryName${index}`}
               name={`categoryName${index}`}
               value={category.name}
-              onChange={(e) => handleCategoryChange(index, e.target.value, 'name')}
+              onChange={(e) =>
+                handleCategoryChange(index, e.target.value, "name")
+              }
               className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
               placeholder="Enter category name"
             />
@@ -92,7 +107,11 @@ export const AddCategoriesModal: React.FC<Props> = ({ open, onCloseModal }) => {
               />
             </div>
             {category.preview && (
-              <img src={category.preview} alt="Preview" className="mt-2 w-24 h-24" />
+              <img
+                src={category.preview}
+                alt="Preview"
+                className="mt-2 w-24 h-24"
+              />
             )}
             <button
               type="button"
@@ -106,7 +125,12 @@ export const AddCategoriesModal: React.FC<Props> = ({ open, onCloseModal }) => {
                 viewBox="0 0 24 24"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -123,7 +147,11 @@ export const AddCategoriesModal: React.FC<Props> = ({ open, onCloseModal }) => {
             type="button"
             onClick={handleSubmit}
             disabled={isSubmitDisabled}
-            className={`bg-primaryBGColor inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${isSubmitDisabled ? 'opacity-50 cursor-not-allowed' : 'hover:meta-5 focus:outline-none focus:meta-5 focus:meta-5 focus:meta-5'}`}
+            className={`bg-primaryBGColor inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
+              isSubmitDisabled
+                ? "opacity-50 cursor-not-allowed"
+                : "hover:meta-5 focus:outline-none focus:meta-5 focus:meta-5 focus:meta-5"
+            }`}
           >
             Submit
           </button>

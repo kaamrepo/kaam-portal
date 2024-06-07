@@ -3,8 +3,8 @@ export interface Category {
   name: string;
   isActive: boolean;
   createdBy: {
-    firstname:string,
-    lastname:string
+    firstname: string;
+    lastname: string;
   };
   createdAt: string;
   bgurl?: string; // optional property
@@ -12,17 +12,17 @@ export interface Category {
 
 export interface CategoryTypes {
   categories: Category[];
-  getCategories: (payload: { isActive: boolean }) => void;
-  updateCategory: (payload:updateDataType) => void;
-  addCategories: (payload:updateDataType) => void;
+  totalCount: number;
+  getCategories: (payload: getParamsType) => void;
+  updateCategory: (payload: updateDataType) => void;
+  addCategories: (payload: updateDataType) => void;
 }
-export interface getParamsType{
+export interface getParamsType {
   skip?: number;
   limit?: number;
-  isActive?:boolean;
-  createdAt?:number
+  searchOn: { isActive?: boolean; paginate?: boolean };
 }
-export interface updateDataType{
+export interface updateDataType {
   _id: string;
   name: string;
   isActive: any;
@@ -31,7 +31,7 @@ export interface updateDataType{
 export interface Props {
   open: boolean;
   onCloseModal: () => void;
-  selectedCategory: any
+  selectedCategory: any;
   setSelectedCategory: React.Dispatch<React.SetStateAction<Category | null>>;
 }
 export interface AddCategoryProps {
