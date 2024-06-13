@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import DefaultLayout from "../../layout/DefaultLayout";
 import useUserStore from "../../store/user.store";
 import { UserTable } from "./UserTable";
+import useLoginStore from "../../store/login.store";
 export const Users = () => {
   const { getUser } = useUserStore();
+  const { user } = useLoginStore();
   const [activeTab, setActiveTab] = useState("Employers");
   const [searchTerm, setSearchTerm] = useState("");
   const handleTabChange = (tab: string) => {
@@ -69,7 +71,11 @@ export const Users = () => {
               setSearchTerm(e.target.value);
             } else {
               setSearchTerm("");
-              getUser({ skip: 0, limit: 10 });
+              getUser({
+                skip: 0,
+                limit: 10,
+                searchOn: { excludeIds: user._id, isActive: true },
+              });
             }
           }}
         />

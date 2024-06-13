@@ -1,7 +1,7 @@
 import DefaultLayout from "../../layout/DefaultLayout";
 import "react-responsive-modal/styles.css";
 import { EditCategoryModal } from "./EditCategoryModal";
-import { useEffect, useState } from "react";
+import { SetStateAction, useState } from "react";
 import useCategoryStore from "../../store/categories.store";
 import { Category } from "../../types/category.types";
 import Table, { ColumnDef } from "../../common/Table/Table";
@@ -59,7 +59,7 @@ export const Categories = () => {
       render: (row) => (
         <div>
           <span className="truncate ...">
-            {`${row.createdBy.firstname} ${row.createdBy.lastname}`}
+            {`${row?.createdBy?.firstname} ${row?.createdBy?.lastname}`}
           </span>
         </div>
       ),
@@ -132,7 +132,8 @@ export const Categories = () => {
       <AddCategoriesModal
         open={isModalAddOpen}
         onCloseModal={closeAddCategoryModal}
-        
+        selectedCategory={undefined}
+        setSelectedCategory={setSelectedCategory}
       />{" "}
     </DefaultLayout>
   );

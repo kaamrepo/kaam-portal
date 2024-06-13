@@ -28,6 +28,10 @@ export const useUserStore = create<UserStore>((set) => ({
     if (payload.searchOn && payload.searchOn.wildString) {
       query["wildString"] = payload.searchOn.wildString;
     }
+    if (payload.searchOn && payload.searchOn.excludeIds) {
+      query["excludeIds"] = payload.searchOn.excludeIds;
+    }
+    console.log("query", query);
     try {
       const response = await API.get(`${USER}`, {
         params: query,

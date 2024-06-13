@@ -77,21 +77,53 @@ export const useCategoryStore = create<CategoryTypes>((set) => ({
       };
     }
   },
+  // addCategories: async (payload: any) => {
+  //   try {
+  //     const categoryPromises = payload.map(async (category: any) => {
+  //       // Upload image to S3
+  //       // const imageUrl = await uploadImageToS3(category.image);
+
+  //       // Create category entry
+  //       const categoryData = {
+  //         name: category?.name,
+  //         // image: imageUrl,
+  //       };
+  //       console.log("categoryData befre enty", categoryData);
+
+  //       const response = await API.post(CATEGORIES, categoryData);
+  //       return response; // Return the created category data
+  //     });
+
+  //     const createdCategories = await Promise.all(categoryPromises);
+  //     console.log("createdCategories", createdCategories);
+
+  //     return {
+  //       data: createdCategories,
+  //       status: true,
+  //     };
+  //   } catch (error) {
+  //     console.error("Error adding categories:", error);
+  //     return {
+  //       data: [],
+  //       status: false,
+  //     };
+  //   }
+  // },
   addCategories: async (payload: any) => {
     try {
-      const categoryPromises = payload.map(async (category: any) => {
-        // Upload image to S3
-        // const imageUrl = await uploadImageToS3(category.image);
+      if (!Array.isArray(payload)) {
+        throw new Error("Payload must be an array");
+      }
 
-        // Create category entry
-        const categoryData = {
-          name: category?.name,
-          // image: imageUrl,
+      const categoryPromises = payload.map(async (category: FormData) => {
+        const config = {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         };
-        console.log("categoryData befre enty", categoryData);
 
-        const response = await API.post(CATEGORIES, categoryData);
-        return response; // Return the created category data
+        const response = await API.post(CATEGORIES, category, config);
+        return response.data;
       });
 
       const createdCategories = await Promise.all(categoryPromises);

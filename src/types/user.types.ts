@@ -34,6 +34,7 @@ export interface getUserPayload {
     isActive?: boolean;
     wildString?: string;
     paginate?: boolean;
+    excludeIds?: string;
   };
 }
 

@@ -1,24 +1,37 @@
-import API from '../common/API';
-import { create } from 'zustand';
-import { LOGIN_USER, REGISTER_USER, GET_OTP } from '../common/endpoint';
-import { LoginResponse, LoginType } from '../types/login.types';
+import API from "../common/API";
+import { create } from "zustand";
+import { LOGIN_USER, REGISTER_USER, GET_OTP } from "../common/endpoint";
+import { LoginResponse, LoginType } from "../types/login.types";
+
+interface RegisterPayload {
+  dialcode: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+}
+
+interface OtpPayload {
+  dialcode: string;
+  phone: string;
+}
 
 export const useLoginStore = create<LoginType>((set) => ({
   isAuthenticated: false,
-  user:{},
+  user: {},
   token: null,
   loaderState: false,
+
+  // Set loader state
   setLoaderState: (status) => set(() => ({ loaderState: status })),
+
+  // Set token and authentication state
   setToken: (token) =>
     set((state) => ({ ...state, token, isAuthenticated: !!token })),
-  registerUser: async (payload) => {
-    const params: any = {};
-    params.dialcode = payload.dialcode;
-    params.firstname = payload.firstName;
-    params.lastname = payload.lastName;
-    params.phone = payload.phone;
+
+  // Register user
+  registerUser: async (payload: any) => {
     try {
-      const response = await API.post(REGISTER_USER, params);
+      const response = await API.post(REGISTER_USER, payload);
       if (response?.data?._id) {
         return {
           data: response,
@@ -30,20 +43,19 @@ export const useLoginStore = create<LoginType>((set) => ({
           status: false,
         };
       }
-    } catch (error) {
-      console.log('error in registering user', error.response.data.message);
-
+    } catch (error: any) {
+      console.log("Error in registering user:", error?.response?.data?.message);
       return {
-        data: error?.response?.data?.message,
+        data: error?.response?.data?.message || "Registration failed",
         status: false,
       };
     }
   },
-  getOtp: async (payload) => {
+
+  // Get OTP
+  getOtp: async (payload: OtpPayload) => {
     try {
       const response = await API.patch(GET_OTP, payload);
-      console.log('response on login', response);
-
       if (response?.data?._id) {
         set(() => ({
           token: response.data.accessToken,
@@ -59,46 +71,50 @@ export const useLoginStore = create<LoginType>((set) => ({
           status: false,
         };
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.log("Error in getting OTP:", error?.response?.data?.message);
       return {
-        data: {},
+        data: error?.response?.data?.message || "Failed to get OTP",
         status: false,
       };
     }
   },
+
+  // Logout user
   logout: async () => {
-    try {      
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
+    try {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
       set(() => ({
         user: {},
         isAuthenticated: false,
       }));
-    
-        return {
-          data: {},
-          status: true,
-        };
-      
-    } catch (error) {
+      return {
+        data: {},
+        status: true,
+      };
+    } catch (error: any) {
+      console.log("Error in logging out:", error?.message);
       return {
         data: {},
         status: false,
       };
     }
   },
-  verifyOtp: async (phone, otp) => {
+
+  // Verify OTP
+  verifyOtp: async (phone: string, otp: string) => {
     try {
-      let data = {
+      const data = {
         phone,
         otp,
-        data: new Date(),
-        strategy: 'local',
+        date: new Date(),
+        strategy: "local",
       };
       const response: LoginResponse = await API.post(LOGIN_USER, data);
       if (response?.data?.accessToken) {
-        localStorage.setItem('token', response.data.accessToken);
-        localStorage.setItem('user', JSON.stringify(response.data.user));
+        localStorage.setItem("token", response.data.accessToken);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
         set(() => ({
           user: response?.data?.user,
           isAuthenticated: true,
@@ -113,9 +129,10 @@ export const useLoginStore = create<LoginType>((set) => ({
           status: false,
         };
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.log("Error in verifying OTP:", error?.response?.data?.message);
       return {
-        data: {},
+        data: error?.response?.data?.message || "Failed to verify OTP",
         status: false,
       };
     }

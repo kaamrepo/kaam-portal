@@ -4,6 +4,7 @@ import useCategoryStore from "../../store/categories.store";
 import { UserActivityModal } from "./UserActivityModal";
 import useUserStore from "../../store/user.store";
 import Table, { ColumnDef } from "../../common/Table/Table";
+import useLoginStore from "../../store/login.store";
 interface User {
   _id: string;
   phone: string;
@@ -20,13 +21,16 @@ interface User {
   tagsDetails: any[];
 }
 export const UserTable = ({ searchInput }: { searchInput?: string }) => {
+  const { user } = useLoginStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activityModalOpen, setActivityModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [limit, setLimit] = useState(10);
   const [skip, setSkip] = useState<Number>(0);
-
-  const [searchOn, setSearchOn] = useState({});
+  const [searchOn, setSearchOn]: any = useState({
+    excludeIds: user._id,
+    isActive: true,
+  });
   const { getUser, users, totalCount } = useUserStore();
   const { categories, getCategories } = useCategoryStore();
   useEffect(() => {
@@ -34,9 +38,17 @@ export const UserTable = ({ searchInput }: { searchInput?: string }) => {
       getUser({
         skip: Number(skip),
         limit: limit,
-        searchOn: { wildString: searchInput },
+        searchOn: {
+          wildString: searchInput,
+          excludeIds: user._id,
+          isActive: true,
+        },
       });
-      setSearchOn({ wildString: searchInput });
+      setSearchOn({
+        wildString: searchInput,
+        excludeIds: user._id,
+        isActive: true,
+      });
     }
   }, [searchInput, setSearchOn]);
   const openUserActivityModal = (user: User) => {
@@ -81,7 +93,7 @@ export const UserTable = ({ searchInput }: { searchInput?: string }) => {
       type: "string",
       render: (row) => (
         <div>
-          <span className="truncate ...">{row.isActive ? "Yes" : "No"}</span>
+          <span className="truncate ...">{row.isactive ? "Yes" : "No"}</span>
         </div>
       ),
     },
@@ -137,8 +149,6 @@ export const UserTable = ({ searchInput }: { searchInput?: string }) => {
   ];
   return (
     <div className="rounded-sm border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-      <div className="flex flex-row justify-between align-middle"></div>
-
       <div className="">
         <Table
           columns={tableColumnDef}

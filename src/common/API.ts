@@ -1,18 +1,15 @@
-import axios from 'axios';
-import useLoginStore from '../store/login.store';
-
+import axios from "axios";
+import useLoginStore from "../store/login.store";
 const API = axios.create({
   baseURL: process.env.REACT_APP_KAAM_PORTAL_HOST,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
 // Add an interceptor to include the Authorization header
 API.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  console.log("token",token);
-  
+  const token = localStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
