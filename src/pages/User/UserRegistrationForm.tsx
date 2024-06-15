@@ -11,10 +11,10 @@ import useUserStore from '../../store/user.store';
 import axios from 'axios';
 const UserRegistrationForm = () => {
   const { getOtp, verifyOtp, registerUser } = useLoginStore();
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phone, setphone] = useState('');
   const [registeredUser, setregisteredUser] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [firstname, setfirstname] = useState('');
+  const [lastname, setlastname] = useState('');
   const [otp, setOtp] = useState('');
   const [isSendingOTP, setIsSendingOTP] = useState(false);
   const [isVerifyingOTP, setIsVerifyingOTP] = useState(false);
@@ -79,9 +79,9 @@ const UserRegistrationForm = () => {
     e.preventDefault();
     // Perform form validation
     if (
-      firstName.trim() === '' ||
-      lastName.trim() === '' ||
-      phoneNumber.trim() === ''
+      firstname.trim() === '' ||
+      lastname.trim() === '' ||
+      phone.trim() === ''
     ) {
       toast.error('Please check mandatory feilds', {
         position: 'top-right',
@@ -93,15 +93,15 @@ const UserRegistrationForm = () => {
       // Call registerUser function
 
       const registerResponse = await registerUser({
-        firstName,
-        lastName,
+        firstname,
+        lastname,
         dialcode: '+91',
-        phone: phoneNumber,
+        phone: phone,
       });
       // Once user is registered, send OTP
       const payload = {
         dialcode: '+91',
-        phone: phoneNumber,
+        phone: phone,
       };
       console.log("registered user",registerResponse);
       
@@ -185,7 +185,7 @@ const UserRegistrationForm = () => {
     validationSchema,
     onSubmit: async (values:any) => {
       console.log('Form Values:', values);
-      values.phone = phoneNumber;
+      values.phone = phone;
       values._id = registeredUser;
      const response = await patchUser(values)
       console.log("response post submit",response);
@@ -202,7 +202,7 @@ const UserRegistrationForm = () => {
   const handleVerifyOTP = async () => {
     setIsVerifyingOTP(true); 
     try {
-      const response = await verifyOtp(phoneNumber, otp);
+      const response = await verifyOtp(phone, otp);
       if (response?.status) {
         setOtpVerified(true);
         console.log('OTP verified successfully');
@@ -240,8 +240,8 @@ const UserRegistrationForm = () => {
                         <input
                           type="text"
                           placeholder="Enter First Name"
-                          value={firstName}
-                          onChange={(e) => setFirstName(e.target.value)}
+                          value={firstname}
+                          onChange={(e) => setfirstname(e.target.value)}
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
                       </div>
@@ -252,8 +252,8 @@ const UserRegistrationForm = () => {
                         <input
                           type="text"
                           placeholder="Enter Last Name"
-                          value={lastName}
-                          onChange={(e) => setLastName(e.target.value)}
+                          value={lastname}
+                          onChange={(e) => setlastname(e.target.value)}
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                         />
                       </div>
@@ -266,12 +266,12 @@ const UserRegistrationForm = () => {
                         <input
                           type="text"
                           placeholder="Enter phone number"
-                          value={phoneNumber}
+                          value={phone}
                           onChange={(e) => {
                             const value = e.target.value;
                             // Check if the entered value is a number and has a length of 10
                             if (/^\d{0,10}$/.test(value)) {
-                              setPhoneNumber(value);
+                              setphone(value);
                             }
                           }}
                           className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
@@ -332,21 +332,21 @@ const UserRegistrationForm = () => {
                       </label>
                       <input
                         type="text"
-                        name="firstName"
+                        name="firstname"
                         placeholder="Enter your first name"
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        value={firstName}
+                        value={firstname}
                         disabled={true}
                         className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
-                          formik.errors.firstName && formik.touched.firstName
+                          formik.errors.firstname && formik.touched.firstname
                             ? 'border-red-500'
                             : ''
                         }`}
                       />
-                      {formik.errors.firstName && formik.touched.firstName && (
+                      {formik.errors.firstname && formik.touched.firstname && (
                         <div className="text-red-500">
-                          {formik.errors.firstName}
+                          {formik.errors.firstname}
                         </div>
                       )}
                     </div>
@@ -357,21 +357,21 @@ const UserRegistrationForm = () => {
                       </label>
                       <input
                         type="text"
-                        name="lastName"
+                        name="lastname"
                         placeholder="Enter your last name"
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        value={lastName}
+                        value={lastname}
                         disabled={true}
                         className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
-                          formik.errors.lastName && formik.touched.lastName
+                          formik.errors.lastname && formik.touched.lastname
                             ? 'border-red-500'
                             : ''
                         }`}
                       />
-                      {formik.errors.lastName && formik.touched.lastName && (
+                      {formik.errors.lastname && formik.touched.lastname && (
                         <div className="text-red-500">
-                          {formik.errors.lastName}
+                          {formik.errors.lastname}
                         </div>
                       )}
                     </div>
