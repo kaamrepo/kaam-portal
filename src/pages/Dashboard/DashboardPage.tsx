@@ -6,13 +6,7 @@ import TableZoneWiseCount from "../../components/Tables/TableZoneWiseCount";
 import dashboardStore from "../../store/Dashboard.store";
 import { useEffect } from "react";
 const DashboardPage = () => {
-  const {
-    getCounts,
-    totaluser,
-    totalPostedJobs,
-    totalAppliedJobs,
-    totalEngagements,
-  } = dashboardStore();
+  const { getCounts } = dashboardStore();
   useEffect(() => {
     getCounts();
   }, []);

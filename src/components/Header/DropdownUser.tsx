@@ -117,7 +117,7 @@ const DropdownUser = () => {
         <ul className="flex flex-col  border-b border-stroke px-4 py-3 dark:border-strokedark">
           <li>
             <Link
-              to="/"
+              to="/profile"
               className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
             >
               <svg

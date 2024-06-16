@@ -1,12 +1,12 @@
 import DefaultLayout from "../../layout/DefaultLayout";
 import "react-responsive-modal/styles.css";
 import { EditCategoryModal } from "./EditCategoryModal";
-import { SetStateAction, useState } from "react";
+import { useState } from "react";
 import useCategoryStore from "../../store/categories.store";
 import { Category } from "../../types/category.types";
 import Table, { ColumnDef } from "../../common/Table/Table";
 import { AddCategoriesModal } from "./AddCategoriesModal";
-export const Categories = () => {
+const Categories = () => {
   const { categories, getCategories, totalCount } = useCategoryStore();
   type SelectedCategory = Category | null;
   let [limit, setLimit] = useState(10);
@@ -138,3 +138,5 @@ export const Categories = () => {
     </DefaultLayout>
   );
 };
+
+export default Categories;

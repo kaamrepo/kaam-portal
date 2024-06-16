@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import DefaultLayout from "../../layout/DefaultLayout";
 import useUserStore from "../../store/user.store";
 import { UserTable } from "./UserTable";
 import useLoginStore from "../../store/login.store";
-export const Users = () => {
+const Users = () => {
   const { getUser } = useUserStore();
   const { user } = useLoginStore();
   const [activeTab, setActiveTab] = useState("Employers");
@@ -64,7 +64,7 @@ export const Users = () => {
         <input
           type="text"
           placeholder="Search users..."
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300 dark:bg-gray-800 dark:border-gray-700 dark:text-white"
+          className="w-full border px-4 py-2 bg-white border-stroke bg-transparent  text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
           value={searchTerm}
           onChange={(e) => {
             if (e.target.value !== "") {
@@ -84,3 +84,5 @@ export const Users = () => {
     </DefaultLayout>
   );
 };
+
+export default Users;

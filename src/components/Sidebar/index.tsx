@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { toAbsoluteUrl } from "../../common/RouteGuard";
 interface SidebarProps {
   sidebarOpen: boolean;

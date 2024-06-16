@@ -3,7 +3,7 @@ import { AuthLayout } from "../pages/Authentication/AuthLaylout";
 import { Login } from "../pages/Authentication/components/Login";
 import { OTPverification } from "../pages/Authentication/components/OTPVerification";
 import { SignUP } from "../pages/Authentication/components/SignUP";
-export const AuthRouters = () => {
+const AuthRouters = () => {
   return (
     <Routes>
       <Route element={<AuthLayout />}>
@@ -15,3 +15,4 @@ export const AuthRouters = () => {
     </Routes>
   );
 };
+export default AuthRouters;

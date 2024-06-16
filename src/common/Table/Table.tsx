@@ -83,7 +83,7 @@ function Table(props: {
 
   return (
     <>
-      <div className="bg-white">
+      <div className="bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
         <div className="flex justify-start pl-2 py-1">
           <span className="">
             Total Count :{" "}
