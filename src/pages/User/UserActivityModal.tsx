@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Modal } from "react-responsive-modal";
-import { User } from "../../types/user.types"; // Assuming you have a User type
 
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  user: User | null;
+  user: any | null;
 
   categories:
     | Array<{ _id: string; name: string; isActive: boolean }>
