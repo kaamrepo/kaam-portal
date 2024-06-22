@@ -5,21 +5,8 @@ import { UserActivityModal } from "./UserActivityModal";
 import useUserStore from "../../store/user.store";
 import Table, { ColumnDef } from "../../common/Table/Table";
 import useLoginStore from "../../store/login.store";
-interface User {
-  _id: string;
-  phone: string;
-  email: string;
-  lastname: string;
-  firstname: string;
-  dialcode: string;
-  isactive: boolean;
-  createdat: string;
-  updatedat: string;
-  firebasetokens: string[];
-  coordinates: number[];
-  activeforjobs: boolean;
-  tagsDetails: any[];
-}
+import { User } from "../../types/user.types";
+
 export const UserTable = ({ searchInput }: { searchInput?: string }) => {
   const { user } = useLoginStore();
   const [isModalOpen, setIsModalOpen] = useState(false);

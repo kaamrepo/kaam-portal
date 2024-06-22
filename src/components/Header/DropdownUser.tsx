@@ -4,7 +4,6 @@ import useLoginStore from "../../store/login.store";
 import toast from "react-hot-toast";
 const DropdownUser = () => {
   const { user } = useLoginStore();
-  console.log(user);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [randomColorClass, setRandomColorClass] = useState("");
   const { logout } = useLoginStore();
@@ -117,7 +116,7 @@ const DropdownUser = () => {
         <ul className="flex flex-col  border-b border-stroke px-4 py-3 dark:border-strokedark">
           <li>
             <Link
-              to="/profile"
+              to="#"
               className="flex items-center gap-3.5 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
             >
               <svg

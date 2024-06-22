@@ -1,12 +1,7 @@
 import API from "../common/API";
 import { create } from "zustand";
 import { USER } from "../common/endpoint";
-import {
-  UserStore,
-  UserPayload,
-  UserData,
-  getUserPayload,
-} from "../types/user.types";
+import { UserStore, getUserPayload, User } from "../types/user.types";
 
 export const useUserStore = create<UserStore>((set) => ({
   users: [],
@@ -31,7 +26,6 @@ export const useUserStore = create<UserStore>((set) => ({
     if (payload.searchOn && payload.searchOn.excludeIds) {
       query["excludeIds"] = payload.searchOn.excludeIds;
     }
-    console.log("query", query);
     try {
       const response = await API.get(`${USER}`, {
         params: query,
@@ -64,48 +58,13 @@ export const useUserStore = create<UserStore>((set) => ({
       };
     }
   },
-  patchUser: async (payload: UserPayload) => {
-    console.log("payload in patchuser", payload);
-
-    let data: Partial<UserData> = {
-      address: {},
-    };
-
-    if (payload?._id) data._id = payload._id;
-    if (payload?.phone) data.phone = payload.phone;
-    if (payload?.lastname) data.lastname = payload.lastname;
-    if (payload?.firstname) data.firstname = payload.firstname;
-    if (payload?.dialcode) data.dialcode = payload.dialcode;
-    if (payload?.activeforjobs) data.activeforjobs = payload.activeforjobs;
-    if (payload?.isactive) data.isactive = payload.isactive;
-    if (payload?.createdat) data.createdat = payload.createdat;
-    if (payload?.updatedat) data.updatedat = payload.updatedat;
-    if (payload?.firebasetokens) data.firebasetokens = payload.firebasetokens;
-    if (payload?.coordinates) data.coordinates = payload.coordinates;
-    if (payload?.otpexpiresat) data.otpexpiresat = payload.otpexpiresat;
-    if (payload?.isActiveforJobs) data.activeforjobs = payload.isActiveforJobs;
-    // if (payload?.role) data.role = payload.role;
-    if (payload?.dob) data.dateofbirth = new Date(payload.dob);
-    if (payload?.address) {
-      data.address = {
-        addressline: payload.address,
-        pincode: payload.pincode,
-        district: payload.district,
-        state: payload.state,
-        country: payload.country,
-        city: payload.city,
-      };
-    }
-    // if (payload?.gender) data.gender = payload.gender;
-    if (payload?.aboutMe) data.aboutme = payload.aboutMe;
-    if (payload?.categories?.length) data.tags = payload.categories;
-
+  patchUser: async (payload: User) => {
     try {
-      const response = await API.patch(`${USER}/${payload._id}`, data);
-
-      if (response?.data?._id) {
-        console.log("om tje if");
-
+      const response = await API.patch(`${USER}/${payload._id}`, payload);
+      if (
+        response?.data?._id &&
+        (response.status == 200 || response.status == 201)
+      ) {
         return {
           data: response.data,
           status: true,
