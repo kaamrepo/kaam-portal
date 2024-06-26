@@ -1,7 +1,5 @@
 // jobApplications.types.ts
 
-import { string } from "yup";
-
 export interface JobApplication {
     id: number;
     position: string;
@@ -20,6 +18,7 @@ export interface JobApplication {
   export interface JobApplicationsState {
     jobapplications: JobApplication[];
     getJobApplications: (payload: GetJobApplicationsPayload) => Promise<GetJobApplicationsResponse | undefined>;
+    clearJobApplications: any;
   }
   
   export interface GetJobApplicationsResponse {

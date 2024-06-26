@@ -16,10 +16,11 @@ interface AppliedJobsProps {
 }
 
 export const AppliedJobs = ({ user }: AppliedJobsProps) => {
-  const { jobapplications, getJobApplications } = useJobApplications();
+  const { jobapplications, getJobApplications,clearJobApplications } = useJobApplications();
 console.log("user",user);
 
   useEffect(() => {
+    clearJobApplications()
     if (user?._id) {
       getJobApplications({ appliedby: user._id });
     }
@@ -27,6 +28,9 @@ console.log("user",user);
 
   return (
     <div className="w-100">
+ {jobapplications.length === 0 ? (
+<p className="text-center">No Data to display</p>
+) :(
       <Accordion allowZeroExpanded>
         {jobapplications.map((application: any) => (
           <AccordionItem key={application._id}>
@@ -53,7 +57,7 @@ console.log("user",user);
             </AccordionItemPanel>
           </AccordionItem>
         ))}
-      </Accordion>
+      </Accordion>)}
     </div>
   );
 };

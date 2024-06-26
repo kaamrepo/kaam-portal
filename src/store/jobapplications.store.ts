@@ -5,7 +5,11 @@ import { JobApplicationsState, GetJobApplicationsPayload} from '../types/jobAppl
 
 export const useJobApplications = create<JobApplicationsState>((set) => ({
   jobapplications: [],
-
+clearJobApplications:async()=>{
+  set(() => ({
+    jobapplications: [],
+  }));
+},
   getJobApplications: async (payload: GetJobApplicationsPayload): Promise<any> => {
     const query: any = {};
     if (payload.limit) {
@@ -18,7 +22,7 @@ export const useJobApplications = create<JobApplicationsState>((set) => ({
       query["appliedby"] = payload.appliedby;
     }
     if (payload.employerid) {
-      query["appliedby"] = payload.employerid;
+      query["employerid"] = payload.employerid;
     }
 
     try {
