@@ -17,6 +17,7 @@ const Users = React.lazy(() => import("./pages/User/Users"));
 const AuthRouters = React.lazy(() => import("./routes/AuthRouters"));
 const Profile = React.lazy(() => import("./pages/User/profile/Profile"));
 const Error404 = React.lazy(() => import("./pages/errors/Error404"));
+const AdminStaffOnBoard = React.lazy(()=>import('./pages/AdminStaff/AdminStaffOnboard'))
 function App() {
   const { isAuthenticated } = useLoginStore();
   const { pathname } = useLocation();
@@ -63,6 +64,15 @@ function App() {
             element={
               <RouteGuard
                 Component={UserRegistrationForm}
+                isAuthenticated={isAuthenticated}
+              />
+            }
+          />
+          <Route
+            path="/action/onboardstaff"
+            element={
+              <RouteGuard
+                Component={AdminStaffOnBoard}
                 isAuthenticated={isAuthenticated}
               />
             }
