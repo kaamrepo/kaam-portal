@@ -1,37 +1,37 @@
 import { useEffect, useState } from "react";
-import useUserStore from "../../store/user.store";
 import Table, { ColumnDef } from "../../common/Table/Table";
 import useLoginStore from "../../store/login.store";
 import useApprovalStore from "../../store/approval.store";
 
 export const ApprovalTable = ({ searchInput }: { searchInput?: string }) => {
   const { user } = useLoginStore();
-  const {getApprovals,approvals} = useApprovalStore()
+  const {getApprovals,approvals,totalCount} = useApprovalStore()
   const [limit, setLimit] = useState(10);
   const [skip, setSkip] = useState<Number>(0);
   const [searchOn, setSearchOn]: any = useState({
     excludeIds: user._id,
     isActive: true,
   });
-  const { getUser, users, totalCount } = useUserStore();
+  console.log("totalCount",totalCount);
+  
   useEffect(() => {
     if (searchInput) {
-      getUser({
+        getApprovals({
         skip: Number(skip),
         limit: limit,
-        searchOn: {
-          wildString: searchInput,
-          excludeIds: user._id,
-          isActive: true,
-        },
+        // searchOn: {
+        //   wildString: searchInput,
+        //   excludeIds: user._id,
+        //   isActive: true,
+        // },
       });
-      setSearchOn({
-        wildString: searchInput,
-        excludeIds: user._id,
-        isActive: true,
-      });
+    //   setSearchOn({
+    //     wildString: searchInput,
+    //     excludeIds: user._id,
+    //     isActive: true,
+    //   });
     }
-  }, [searchInput, setSearchOn])
+  }, [])
   useEffect(() => {
     getApprovals();
   }, []);
@@ -40,24 +40,30 @@ export const ApprovalTable = ({ searchInput }: { searchInput?: string }) => {
       key: ``,
       label: "Requestor",
       type: "string",
-      render: (row: { firstname: string; lastname: string }) => (
+      render: (row) => (
         <div>
-          <span className="truncate ...">{`${row.firstname} ${row.lastname}`}</span>
+          <span className="truncate ...">{`${row?.userDetails?.firstname} ${row?.userDetails?.lastname}`}</span>
         </div>
       ),
     },
     {
-      key: "phone",
+      key: ``,
       label: "Phone",
       type: "string",
+      render: (row) => (
+        <div>
+          <span className="truncate ...">{`${row?.userDetails?.phone}`}</span>
+        </div>
+      ),
     },
+
     {
         key: ``,
         label: "Available posting",
         type: "string",
-        render: (row: { firstname: string; lastname: string }) => (
+        render: (row) => (
           <div>
-            <span className="truncate ...">{`${row.firstname} ${row.lastname}`}</span>
+            <span className="flex justify-center truncate ...">{`${row?.userDetails?.allowedjobposting}`}</span>
           </div>
         ),
       },
@@ -65,9 +71,9 @@ export const ApprovalTable = ({ searchInput }: { searchInput?: string }) => {
         key: ``,
         label: "Requested posting",
         type: "string",
-        render: (row: { firstname: string; lastname: string }) => (
+        render: (row) => (
           <div>
-            <span className="truncate ...">{`${row.firstname} ${row.lastname}`}</span>
+            <span className="flex justify-center truncate ...">{`${row?.requestedjobposting}`}</span>
           </div>
         ),
       },
@@ -77,7 +83,7 @@ export const ApprovalTable = ({ searchInput }: { searchInput?: string }) => {
       type: "string",
       render: (row) => (
         <div>
-          <span className="truncate ...">{row.isactive ? "Yes" : "No"}</span>
+        <span className="flex justify-center truncate ...">{`${row?.userDetails?.allowedjobapplication}`}</span>
         </div>
       ),
     },
@@ -87,7 +93,7 @@ export const ApprovalTable = ({ searchInput }: { searchInput?: string }) => {
       type: "string",
       render: (row) => (
         <div>
-          <span className="truncate ...">{row.isactive ? "Yes" : "No"}</span>
+         <span className="flex justify-center truncate ...">{`${row?.requestedjobapplication}`}</span>
         </div>
       ),
     },
@@ -97,7 +103,7 @@ export const ApprovalTable = ({ searchInput }: { searchInput?: string }) => {
       type: "string",
       render: (row) => (
         <div>
-          <span className="truncate ...">{row.isactive ? "Yes" : "No"}</span>
+          <span className="lex justify-center truncate ...">{row.isactive ? "Yes" : "No"}</span>
         </div>
       ),
     },
@@ -108,11 +114,11 @@ export const ApprovalTable = ({ searchInput }: { searchInput?: string }) => {
       <div className="">
         <Table
           columns={tableColumnDef}
-          data={users ?? []}
+          data={approvals ?? []}
           totalCount={totalCount}
-          pageable={true}
-          searchInput={searchOn}
-          APIcall={getUser}
+        //   pageable={true}
+        //   searchInput={searchOn}
+          APIcall={getApprovals}
           limit={limit}
           onChangeLimit={setLimit}
           skip={skip}
