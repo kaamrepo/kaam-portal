@@ -3,8 +3,10 @@ export interface DashboardStoreState {
     totalPostedJobs: number;
     totalAppliedJobs: number;
     totalEngagements: number;
+    locationData:any
   }
   
   export interface DashboardStore extends DashboardStoreState {
     getCounts: () => void;
+    getLocationStats: () => void;
   }

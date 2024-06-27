@@ -1,40 +1,60 @@
-import React, { useState } from 'react';
-interface CountData {
-  name: string;
-  count: number;
-}
-
-const useCountData: { [key: string]: CountData[] } = {
-  State: [
-    { name: 'Google', count: 3.5 },
-    { name: 'Twitter', count: 2.2 },
-    { name: 'Github', count: 2.1 },
-    { name: 'Vimeo', count: 1.5 },
-    { name: 'Facebook', count: 3.5 },
-  ],
-  District: [
-    { name: 'District A', count: 1.2 },
-    { name: 'District B', count: 2.8 },
-    { name: 'District C', count: 1.7 },
-    { name: 'District D', count: 3.3 },
-    { name: 'District E', count: 2.5 },
-  ],
-  City: [
-    { name: 'City X', count: 0.9 },
-    { name: 'City Y', count: 1.5 },
-    { name: 'City Z', count: 2.3 },
-    { name: 'City W', count: 1.8 },
-    { name: 'City V', count: 3.0 },
-  ],
-};
+import React, { useEffect, useState } from 'react';
+import useDashboardStore from '../../store/Dashboard.store';
+import { CountData } from '../../types/dashboard.types'; // Ensure this type is imported correctly
 
 const TableZoneWiseCount: React.FC = () => {
-  const [selectedCategory, setSelectedCategory] = useState<
-    'State' | 'District' | 'City'
-  >('State');
+  const { getLocationStats, locationData } = useDashboardStore();
+  const [selectedCategory, setSelectedCategory] = useState<'State' | 'District' | 'City'>('State');
+
+  useEffect(() => {
+    getLocationStats();
+  }, []);
 
   const handleButtonClick = (category: 'State' | 'District' | 'City') => {
     setSelectedCategory(category);
+  };
+
+  // Determine which data to display based on selectedCategory
+  const getCountData = (): CountData[] => {
+    switch (selectedCategory) {
+      case 'State':
+        return locationData.state
+          ? Object.entries(locationData.state).map(([state, count]) => ({
+              name: state,
+              count: count,
+            }))
+          : [];
+      case 'City':
+        return locationData.city
+          ? Object.entries(locationData.city).map(([city, count]) => ({
+              name: city,
+              count: count,
+            }))
+          : [];
+      case 'District':
+        return locationData.district
+          ? Object.entries(locationData.district).map(([district, count]) => ({
+              name: district,
+              count: count,
+            }))
+          : [];
+      default:
+        return [];
+    }
+  };
+
+  // Total count based on selectedCategory
+  const getTotalCount = (): number => {
+    switch (selectedCategory) {
+      case 'State':
+        return locationData.totalStateCount ?? 0;
+      case 'City':
+        return locationData.totalCityCount ?? 0;
+      case 'District':
+        return locationData.totalDistrictCount ?? 0;
+      default:
+        return 0;
+    }
   };
 
   return (
@@ -55,9 +75,7 @@ const TableZoneWiseCount: React.FC = () => {
 
           <button
             className={`rounded py-1 px-3 text-xs font-medium text-black shadow-card hover:bg-white hover:shadow-card dark:bg-boxdark dark:text-white dark:hover:bg-boxdark ${
-              selectedCategory === 'District'
-                ? 'bg-primaryBGColor text-white'
-                : ''
+              selectedCategory === 'District' ? 'bg-primaryBGColor text-white' : ''
             }`}
             onClick={() => handleButtonClick('District')}
           >
@@ -84,15 +102,15 @@ const TableZoneWiseCount: React.FC = () => {
           </div>
           <div className="p-2.5 text-center xl:p-5">
             <h5 className="text-sm font-medium uppercase xsm:text-base">
-              $Count
+              Count: {getTotalCount()}
             </h5>
           </div>
         </div>
 
-        {useCountData[selectedCategory].map((data: CountData, key: number) => (
+        {getCountData().map((data: CountData, key: number) => (
           <div
             className={`flex justify-between items-center ${
-              key === useCountData[selectedCategory].length - 1
+              key === getCountData().length - 1
                 ? ''
                 : 'border-b border-stroke dark:border-strokedark'
             }`}

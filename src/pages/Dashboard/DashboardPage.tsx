@@ -10,6 +10,7 @@ const DashboardPage = () => {
     totalPostedJobs,
     totalAppliedJobs,
     totalEngagements,
+    
    } = useDashboardStore();
    console.log("totaluser",totaluser);
    
@@ -20,7 +21,7 @@ const DashboardPage = () => {
     <DefaultLayout>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-3">
         {" "}
-        <CardDataStats title="Total Users" total="10000">
+        <CardDataStats title="Total Users" total={totaluser}>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -43,7 +44,7 @@ const DashboardPage = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Posted Jobs" total="10000">
+        <CardDataStats title="Posted Jobs" total={totalPostedJobs}>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -66,7 +67,7 @@ const DashboardPage = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Applied Jobs" total="4000">
+        <CardDataStats title="Applied Jobs" total={totalAppliedJobs}>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -81,7 +82,7 @@ const DashboardPage = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Engagements" total="2500">
+        <CardDataStats title="Engagements" total={totalEngagements}>
           <svg
             className="fill-primary dark:fill-white"
             width="22"

@@ -11,7 +11,7 @@ const options: ApexOptions = {
     fontFamily: 'Satoshi, sans-serif',
     type: 'donut',
   },
-  colors: ['#4A9D58', '#2f753b', '#8FD0EF'],
+  colors: ['#615EFC', '#9B4444', '#124076'],
   labels: ['Employee', 'Employer', 'Mixed'],
   legend: {
     show: true,
