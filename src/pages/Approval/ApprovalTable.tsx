@@ -13,7 +13,10 @@ export const ApprovalTable = ({ searchInput }: { searchInput?: string }) => {
     isActive: true,
   });
   console.log("totalCount",totalCount);
-  
+  const handleApproval = (user: User) => {
+
+    setIsModalOpen(true);
+  };
   useEffect(() => {
     if (searchInput) {
         getApprovals({
@@ -102,9 +105,14 @@ export const ApprovalTable = ({ searchInput }: { searchInput?: string }) => {
       label: "Action",
       type: "string",
       render: (row) => (
-        <div>
-          <span className="lex justify-center truncate ...">{row.isactive ? "Yes" : "No"}</span>
-        </div>
+        <>
+        <button
+            className="flex items-center justify-center rounded-md bg-meta-3 py-2 px-3 text-center font-medium text-white hover:bg-opacity-90"
+            onClick={() => handleApproval(row)}
+          >
+            Approve
+          </button>
+      </>
       ),
     },
    
