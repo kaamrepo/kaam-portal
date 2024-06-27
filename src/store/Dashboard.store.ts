@@ -1,30 +1,32 @@
 import API from '../common/API';
 import { create } from 'zustand';
-import { USER,JOB,JOB_APPLICATION } from '../common/endpoint';
+import { USER } from '../common/endpoint';
 import { DashboardStore } from '../types/dashboard.types';
-export const dashboardStore = create<DashboardStore>((set) => ({
+export const useDashboardStore = create<DashboardStore>((set) => ({
   totaluser: 0,
   totalPostedJobs: 0,
   totalAppliedJobs: 0,
   totalEngagements:0,
 
   getCounts: async () => {
-    // try {
-    //   const userResponse = await API.get(USER);
+    try {
+      const userResponse = await API.get(USER,{params:{analytics:"analyticstest"}});
     //   if (userResponse?.data?.data) {
     //     set(() => ({
     //         totaluser: userResponse.data,
           
     //     }));
     // }
-    // } catch (error) {
-    //   return {
-    //     data: {},
-    //     status: false,
-    //   };
-    // }
+    console.log("userResponse",userResponse);
+    
+    } catch (error) {
+      return {
+        data: {},
+        status: false,
+      };
+    }
   },
 
 }));
 
-export default dashboardStore;
+export default useDashboardStore;
