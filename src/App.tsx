@@ -18,6 +18,8 @@ const AuthRouters = React.lazy(() => import("./routes/AuthRouters"));
 const Profile = React.lazy(() => import("./pages/User/profile/Profile"));
 const Error404 = React.lazy(() => import("./pages/errors/Error404"));
 const AdminStaffOnBoard = React.lazy(()=>import('./pages/AdminStaff/AdminStaffOnboard'))
+const Approval = React.lazy(()=>import('./pages/Approval/Approvals'))
+
 function App() {
   const { isAuthenticated } = useLoginStore();
   const { pathname } = useLocation();
@@ -73,6 +75,15 @@ function App() {
             element={
               <RouteGuard
                 Component={AdminStaffOnBoard}
+                isAuthenticated={isAuthenticated}
+              />
+            }
+          />
+          <Route
+            path="/action/approval"
+            element={
+              <RouteGuard
+                Component={Approval}
                 isAuthenticated={isAuthenticated}
               />
             }
