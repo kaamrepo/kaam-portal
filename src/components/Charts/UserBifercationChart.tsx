@@ -1,6 +1,7 @@
-import { ApexOptions } from 'apexcharts';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
+import useDashboardStore from '../../store/Dashboard.store';
+import { ApexOptions } from 'apexcharts';
 
 interface ChartThreeState {
   series: number[];
@@ -17,7 +18,7 @@ const options: ApexOptions = {
     show: true,
     position: 'bottom',
   },
-  plotOptions: {  
+  plotOptions: {
     pie: {
       donut: {
         size: '65%',
@@ -49,10 +50,34 @@ const options: ApexOptions = {
 };
 
 const ChartThree: React.FC = () => {
+  const { userBifercation, getUserBifercationStats } = useDashboardStore();
   const [state, setState] = useState<ChartThreeState>({
-    series: [50, 20, 30], // Updated series to reflect new stats
+    series: [0, 0, 0],
   });
+  const [isLoaded, setIsLoaded] = useState(false);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      await getUserBifercationStats();
+      setIsLoaded(true); // Set the loading flag to true after data is fetched
+    };
+    fetchData();
+  }, [getUserBifercationStats]);
+
+  useEffect(() => {
+    if (isLoaded) { // Update state only after data is loaded
+      setState({
+        series: [
+          userBifercation?.employee || 0,
+          userBifercation?.employer || 0,
+          userBifercation?.mixed || 0,
+        ],
+      });
+    }
+  }, [isLoaded, userBifercation]);
+
+  console.log("userBifercation", userBifercation);
+  console.log("state", state);
 
   return (
     <div className="sm:px-7.5 col-span-12 rounded-sm border border-stroke bg-white px-5 pb-5 pt-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-5">
@@ -83,17 +108,17 @@ const ChartThree: React.FC = () => {
         <div className="legend-item cursor-pointer hover:text-green-600">
           <span className="legend-color bg-green-500"></span>
           <span className="ml-2">Employee</span>
-          <span className="ml-2">(50%)</span>
+          <span className="ml-2">{userBifercation?.employee || 0}%</span>
         </div>
         <div className="legend-item cursor-pointer hover:text-orange-600">
           <span className="legend-color bg-orange-500"></span>
           <span className="ml-2">Employer</span>
-          <span className="ml-2">(20%)</span>
+          <span className="ml-2">{userBifercation?.employer || 0}%</span>
         </div>
         <div className="legend-item cursor-pointer hover:text-gray-500">
           <span className="legend-color bg-gray-400"></span>
           <span className="ml-2">Mixed</span>
-          <span className="ml-2">(30%)</span>
+          <span className="ml-2">{userBifercation?.mixed || 0}%</span>
         </div>
       </div>
     </div>

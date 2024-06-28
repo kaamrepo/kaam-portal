@@ -8,6 +8,7 @@ export const useDashboardStore = create<DashboardStore>((set) => ({
   totalAppliedJobs: 0,
   totalEngagements: 0,
   locationData: {},
+  userBifercation:[],
   getCounts: async () => {
     try {
       const countStats = await API.get(ANALYTICS, {
@@ -46,6 +47,22 @@ export const useDashboardStore = create<DashboardStore>((set) => ({
       }
       return {
         data: locationStats?.data,
+        status: true,
+      };
+    } catch (error) {}
+  },
+  getUserBifercationStats: async () => {
+    try {
+      const userBifercationStats = await API.get(ANALYTICS, {
+        params: { userbifercationanalytics: true },
+      });
+      if (Object.keys(userBifercationStats?.data)?.length !== 0) {
+        set(() => ({
+          userBifercation: userBifercationStats?.data,
+        }));
+      }
+      return {
+        data: userBifercationStats,
         status: false,
       };
     } catch (error) {}
