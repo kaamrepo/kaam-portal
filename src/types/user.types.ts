@@ -47,6 +47,10 @@ export interface UserStore {
     data: UserData | [];
     status: boolean;
   }>;
+  createStaffUser: (payload: User) => Promise<{
+    data: UserData | [];
+    status: boolean;
+  }>;
   totalCount: number;
   getUser: (payload: getUserPayload) => Promise<{
     data: UserData | [];
@@ -88,9 +92,9 @@ export interface User {
   lastname: string;
   email: string;
   otp?: string;
-  otpexpiresat: string;
-  createdat: string;
-  updatedat: string;
+  otpexpiresat?: string;
+  createdat?: string;
+  updatedat?: string;
   isactive: boolean;
   aboutme?: string;
   dateofbirth: string;
@@ -103,4 +107,6 @@ export interface User {
   allowedjobapplication?: number;
   tags?: [];
   experience?: Experience[];
+  gender?: string;
+  role?: string;
 }

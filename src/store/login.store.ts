@@ -1,15 +1,8 @@
 import API from "../common/API";
 import { create } from "zustand";
-import { LOGIN_USER, REGISTER_USER, GET_OTP } from "../common/endpoint";
+import { LOGIN_USER, REGISTER_USER, GET_OTP, USER } from "../common/endpoint";
 import { LoginResponse, LoginType } from "../types/login.types";
-
-interface RegisterPayload {
-  dialcode: string;
-  firstName: string;
-  lastName: string;
-  phone: string;
-}
-
+import Cookies from "js-cookie";
 interface OtpPayload {
   dialcode: string;
   phone: string;
@@ -20,13 +13,14 @@ export const useLoginStore = create<LoginType>((set) => ({
   user: {},
   token: null,
   loaderState: false,
-
+  loggedInUserId: "",
   // Set loader state
   setLoaderState: (status) => set(() => ({ loaderState: status })),
 
-  // Set token and authentication state
-  setToken: (token) =>
-    set((state) => ({ ...state, token, isAuthenticated: !!token })),
+  setToken: (token) => {
+    Cookies.set("token", token);
+    set((state) => ({ ...state, token, isAuthenticated: !!token }));
+  },
 
   // Register user
   registerUser: async (payload: any) => {
@@ -57,8 +51,10 @@ export const useLoginStore = create<LoginType>((set) => ({
     try {
       const response = await API.patch(GET_OTP, payload);
       if (response?.data?._id) {
+        const accessToken = response.data.accessToken;
+        Cookies.set("token", accessToken);
         set(() => ({
-          token: response.data.accessToken,
+          token: accessToken,
           isAuthenticated: true,
         }));
         return {
@@ -80,11 +76,12 @@ export const useLoginStore = create<LoginType>((set) => ({
     }
   },
 
-  // Logout user
+
   logout: async () => {
     try {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      Cookies.remove("token");
+      Cookies.remove("user");
+      Cookies.remove("loggedInUserId");
       set(() => ({
         user: {},
         isAuthenticated: false,
@@ -102,7 +99,6 @@ export const useLoginStore = create<LoginType>((set) => ({
     }
   },
 
-  // Verify OTP
   verifyOtp: async (phone: string, otp: string) => {
     try {
       const data = {
@@ -113,10 +109,11 @@ export const useLoginStore = create<LoginType>((set) => ({
       };
       const response: LoginResponse = await API.post(LOGIN_USER, data);
       if (response?.data?.accessToken) {
-        localStorage.setItem("token", response.data.accessToken);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
+        Cookies.set("token", response.data.accessToken);
+        Cookies.set("user", JSON.stringify(response.data.user));
+        Cookies.set("loggedInUserId", response?.data?.user?._id);
         set(() => ({
-          user: response?.data?.user,
+          loggedInUserId: response?.data?.user?._id,
           isAuthenticated: true,
         }));
         return {
@@ -136,6 +133,13 @@ export const useLoginStore = create<LoginType>((set) => ({
         status: false,
       };
     }
+  },
+  getUserDetails: async (userId: string) => {
+    const response = await API.get(`${USER}/${userId}`);
+    set(() => ({
+      user: response?.data,
+      isAuthenticated: true,
+    }));
   },
 }));
 

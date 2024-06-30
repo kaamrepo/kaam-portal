@@ -1,6 +1,6 @@
 import API from "../common/API";
 import { create } from "zustand";
-import { USER } from "../common/endpoint";
+import { ONBOARDSTAFF, USER } from "../common/endpoint";
 import { UserStore, getUserPayload, User } from "../types/user.types";
 
 export const useUserStore = create<UserStore>((set) => ({
@@ -80,6 +80,27 @@ export const useUserStore = create<UserStore>((set) => ({
         data: [],
         status: false,
       };
+    }
+  },
+  createStaffUser: async (payload: User) => {
+    try {
+      const response = await API.post(`${ONBOARDSTAFF}`, payload);
+      if (
+        response?.data?._id &&
+        (response.status == 200 || response.status == 201)
+      ) {
+        return {
+          data: response.data,
+          status: true,
+        };
+      } else {
+        return {
+          data: [],
+          status: false,
+        };
+      }
+    } catch (error) {
+      throw error;
     }
   },
 }));

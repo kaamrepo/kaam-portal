@@ -1,57 +1,41 @@
 import { useState, useEffect } from "react";
-import * as yup from "yup";
-import { useNavigate } from "react-router-dom";
-import { useFormik } from "formik";
-import useLoginStore from "../../store/login.store";
-import toast from "react-hot-toast";
-import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import DefaultLayout from "../../layout/DefaultLayout";
-import useCategoryStore from "../../store/categories.store";
-import useUserStore from "../../store/user.store";
+import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
+import { useForm, Controller } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
-const AdminStaffOnboard = () => {
-
-  const [phone, setphone] = useState("");
-  const [registeredUser, setregisteredUser] = useState("");
-  const [firstname, setfirstname] = useState("");
-  const [lastname, setlastname] = useState("");
-  const [otp, setOtp] = useState("");
-  const [isSendingOTP, setIsSendingOTP] = useState(false);
-  const [isVerifyingOTP, setIsVerifyingOTP] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpVerified, setOtpVerified] = useState(false);
-  const { getCategories, categories } = useCategoryStore();
-  const { patchUser } = useUserStore();
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import useUserStore from "../../store/user.store";
+import { User } from "../../types/user.types";
+const OnBoardingAdminStaff = () => {
   const [cities, setCities] = useState([]);
+  const { createStaffUser } = useUserStore();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (otpVerified) {
-      // Fetch categories once OTP is verified
-      console.log("categories", categories);
-
-      fetchCategories();
-    }
-  }, [otpVerified]);
-  const getAddressDateByZIPCode = async (zipCode, setFieldValue, setCities) => {
+  const getAddressDataByZIPCode = async (
+    zipCode: string,
+    setValue: any,
+    setCities: any
+  ) => {
     try {
       const res = await axios.get(
         `https://api.postalpincode.in/pincode/${zipCode}`
       );
-      console.log("pin code response", res);
-
       if (res.data[0].Status === "Success") {
-        setFieldValue("district", res.data[0]?.PostOffice[0]?.District);
-        setFieldValue("state", res.data[0]?.PostOffice[0]?.State);
-        setFieldValue("country", res.data[0]?.PostOffice[0]?.Country);
+        setValue("district", res.data[0]?.PostOffice[0]?.District);
+        setValue("state", res.data[0]?.PostOffice[0]?.State);
+        setValue("country", res.data[0]?.PostOffice[0]?.Country);
 
         let placeSet = new Set();
-        res.data[0]?.PostOffice.forEach((p) => {
-          placeSet.add(p?.Block);
-          placeSet.add(p?.Division);
-        });
+        res.data[0]?.PostOffice.forEach(
+          (p: { Block: string; Division: string }) => {
+            placeSet.add(p?.Block);
+            placeSet.add(p?.Division);
+          }
+        );
 
-        setCities(Array.from(placeSet).map((d, i) => ({ label: d, value: d })));
+        setCities(Array.from(placeSet).map((d) => ({ label: d, value: d })));
       } else {
         toast.error("Invalid ZIP Code.");
       }
@@ -59,30 +43,24 @@ const AdminStaffOnboard = () => {
       toast.error("Invalid ZIP Code.");
     }
   };
-  const handlePinCodeChange = async (e) => {
-    const { value } = e.target;
-    formik.handleChange(e);
-    if (value && value.length === 6) {
-      await getAddressDateByZIPCode(value, formik.setFieldValue, setCities);
-    }
-  };
 
-  const fetchCategories = async () => {
-    try {
-      getCategories(); // Adjust the endpoint as necessary
-    } catch (error) {
-      toast.error("Failed to fetch categories");
+  const handlePinCodeChange = async (e: any) => {
+    const { value } = e.target;
+    setValue("pincode", value);
+    if (value && value.length === 6) {
+      await getAddressDataByZIPCode(value, setValue, setCities);
     }
   };
- 
   const validationSchema = yup.object({
+    firstname: yup.string().required("firstname is required"),
+    lastname: yup.string().required("lastname is required"),
+    dialcode: yup.string(),
     email: yup.string().email("Invalid email address"),
-    isActiveforJobs: yup.boolean().required("Active status is required"),
     role: yup
       .string()
       .oneOf(["employer", "employee"], "Invalid role")
       .required("Role is required"),
-    dob: yup.date().required("Date of birth is required"),
+    dateofbirth: yup.date().required("Date of birth is required"),
     address: yup.string().required("Address is required"),
     pincode: yup.string().required("PIN code is required"),
     city: yup.string().required("City is required"),
@@ -93,19 +71,25 @@ const AdminStaffOnboard = () => {
       .string()
       .oneOf(["male", "female", "other"], "Invalid gender")
       .required("Gender is required"),
-    aboutMe: yup.string().required("About me is required"),
-    categories: yup
-      .array()
-      .min(1, "At least one category must be selected")
-      .required("Categories are required"),
+    phone: yup
+      .string()
+      .matches(/^\d{10}$/, "Phone number must be exactly 10 digits")
+      .required("Phone number is required"),
   });
 
-  const formik = useFormik({
-    initialValues: {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
       email: "",
-      isActiveforJobs: true,
       role: "employee",
-      dob: "",
+      firstname: "",
+      lastname: "",
+      dateofbirth: new Date(),
       address: "",
       pincode: "",
       city: "",
@@ -113,26 +97,40 @@ const AdminStaffOnboard = () => {
       state: "",
       country: "",
       gender: "male",
-      aboutMe: "",
-      categories: [],
       phone: "",
+      dialcode: "91",
     },
-    validationSchema,
-    onSubmit: async (values: any) => {
-      console.log("Form Values:", values);
-      values.phone = phone;
-      values._id = registeredUser;
-      const response = await patchUser(values);
-      console.log("response post submit", response);
-      if (response.status) {
-        toast.success("Details Updated Successfully");
-        navigate("/action/users");
-      } else {
-        toast.error("Unable to Update User Details");
-      }
-    },
+    resolver: yupResolver(validationSchema),
   });
 
+  const onSubmit = async (values: any) => {
+    const user: User = {
+      phone: values.phone,
+      dialcode: "91",
+      firstname: values.firstname,
+      lastname: values.lastname,
+      email: values.email,
+      dateofbirth: values.dateofbirth,
+      isactive: true,
+      address: {
+        addressline: values.address,
+        pincode: values.pincode,
+        district: values.district,
+        city: values.city,
+        state: values.state,
+        country: values.country,
+      },
+      gender: values.gender,
+      role: values.role,
+    };
+    const response = await createStaffUser(user);
+    if (response.status) {
+      toast.success("New Staff Added Successfully");
+      navigate("/action/users");
+    } else {
+      toast.error("Error while adding new staff");
+    }
+  };
 
   return (
     <DefaultLayout>
@@ -140,7 +138,7 @@ const AdminStaffOnboard = () => {
       <div className="grid grid-cols-1">
         <div className="flex flex-col gap-9">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <form onSubmit={formik.handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="p-6.5">
                 <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                   <div className="w-full xl:w-1/2">
@@ -149,69 +147,92 @@ const AdminStaffOnboard = () => {
                     </label>
                     <input
                       type="text"
-                      name="firstname"
+                      {...register("firstname")}
                       placeholder="Enter your first name"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={firstname}
                       className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
-                        formik.errors.firstname && formik.touched.firstname
-                          ? "border-red-500"
-                          : ""
+                        errors.firstname ? "border-red-500" : ""
                       }`}
                     />
-                    {formik.errors.firstname && formik.touched.firstname && (
+                    {errors.firstname && (
                       <div className="text-red-500">
-                        {formik.errors.firstname}
+                        {errors.firstname.message}
                       </div>
                     )}
                   </div>
-
                   <div className="w-full xl:w-1/2">
                     <label className="mb-2.5 block text-black dark:text-white">
                       Last name
                     </label>
                     <input
                       type="text"
-                      name="lastname"
+                      {...register("lastname")}
                       placeholder="Enter your last name"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={lastname}
                       className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
-                        formik.errors.lastname && formik.touched.lastname
-                          ? "border-red-500"
-                          : ""
+                        errors.lastname ? "border-red-500" : ""
                       }`}
                     />
-                    {formik.errors.lastname && formik.touched.lastname && (
+                    {errors.lastname && (
                       <div className="text-red-500">
-                        {formik.errors.lastname}
+                        {errors.lastname.message}
                       </div>
                     )}
                   </div>
                 </div>
 
                 <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
+                  <div className="mb-4.5 flex flex-col gap-2 xl:flex-row">
+                    <div className="w-full xl:w-1/4">
+                      <label className="mb-2.5 block text-black dark:text-white">
+                        Dialcode
+                      </label>
+                      <input
+                        type="text"
+                        defaultValue={"🇮🇳 +91"}
+                        disabled
+                        placeholder="Enter country code"
+                        className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary `}
+                      />
+                    </div>
+
+                    <div className="w-full xl:w-3/4">
+                      <label className="mb-2.5 block text-black dark:text-white">
+                        Phone Number
+                      </label>
+                      <input
+                        type="text"
+                        {...register("phone", {
+                          required: "Phone number is required",
+                          pattern: {
+                            value: /^\d{10}$/,
+                            message: "Phone number must be 10 digits",
+                          },
+                        })}
+                        placeholder="Enter phone number"
+                        className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
+                          errors.phone ? "border-red-500" : ""
+                        }`}
+                      />
+                      {errors.phone && (
+                        <div className="text-red-500">
+                          {errors.phone.message}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                   <div className="w-full xl:w-1/2">
                     <label className="mb-2.5 block text-black dark:text-white">
                       Email
                     </label>
                     <input
                       type="email"
-                      name="email"
+                      {...register("email")}
                       placeholder="Enter your email address"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.email}
                       className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
-                        formik.errors.email && formik.touched.email
-                          ? "border-red-500"
-                          : ""
+                        errors.email ? "border-red-500" : ""
                       }`}
                     />
-                    {formik.errors.email && formik.touched.email && (
-                      <div className="text-red-500">{formik.errors.email}</div>
+                    {errors.email && (
+                      <div className="text-red-500">{errors.email.message}</div>
                     )}
                   </div>
                 </div>
@@ -221,21 +242,16 @@ const AdminStaffOnboard = () => {
                     Role
                   </label>
                   <select
-                    name="role"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.role}
+                    {...register("role")}
                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
-                      formik.errors.role && formik.touched.role
-                        ? "border-red-500"
-                        : ""
+                      errors.role ? "border-red-500" : ""
                     }`}
                   >
                     <option value="employee">Employee</option>
                     <option value="employer">Employer</option>
                   </select>
-                  {formik.errors.role && formik.touched.role && (
-                    <div className="text-red-500">{formik.errors.role}</div>
+                  {errors.role && (
+                    <div className="text-red-500">{errors.role.message}</div>
                   )}
                 </div>
 
@@ -245,18 +261,15 @@ const AdminStaffOnboard = () => {
                   </label>
                   <input
                     type="date"
-                    name="dob"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.dob}
+                    {...register("dateofbirth")}
                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
-                      formik.errors.dob && formik.touched.dob
-                        ? "border-red-500"
-                        : ""
+                      errors.dateofbirth ? "border-red-500" : ""
                     }`}
                   />
-                  {formik.errors.dob && formik.touched.dob && (
-                    <div className="text-red-500">{formik.errors.dob}</div>
+                  {errors.dateofbirth && (
+                    <div className="text-red-500">
+                      {errors.dateofbirth.message}
+                    </div>
                   )}
                 </div>
 
@@ -266,19 +279,14 @@ const AdminStaffOnboard = () => {
                   </label>
                   <input
                     type="text"
-                    name="address"
+                    {...register("address")}
                     placeholder="Enter your address"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.address}
                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
-                      formik.errors.address && formik.touched.address
-                        ? "border-red-500"
-                        : ""
+                      errors.address ? "border-red-500" : ""
                     }`}
                   />
-                  {formik.errors.address && formik.touched.address && (
-                    <div className="text-red-500">{formik.errors.address}</div>
+                  {errors.address && (
+                    <div className="text-red-500">{errors.address.message}</div>
                   )}
                 </div>
 
@@ -288,19 +296,15 @@ const AdminStaffOnboard = () => {
                   </label>
                   <input
                     type="text"
-                    name="pincode"
+                    {...register("pincode")}
                     placeholder="Enter your PIN code"
-                    onChange={handlePinCodeChange}
-                    onBlur={formik.handleBlur}
-                    value={formik.values.pincode}
                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
-                      formik.errors.pincode && formik.touched.pincode
-                        ? "border-red-500"
-                        : ""
+                      errors.pincode ? "border-red-500" : ""
                     }`}
+                    onChange={handlePinCodeChange}
                   />
-                  {formik.errors.pincode && formik.touched.pincode && (
-                    <div className="text-red-500">{formik.errors.pincode}</div>
+                  {errors.pincode && (
+                    <div className="text-red-500">{errors.pincode.message}</div>
                   )}
                 </div>
 
@@ -309,26 +313,29 @@ const AdminStaffOnboard = () => {
                     <label className="mb-2.5 block text-black dark:text-white">
                       City
                     </label>
-                    <select
+                    <Controller
                       name="city"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.city}
-                      className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
-                        formik.errors.city && formik.touched.city
-                          ? "border-red-500"
-                          : ""
-                      }`}
-                    >
-                      <option value="">Select your city</option>
-                      {cities.map((city, index) => (
-                        <option key={index} value={city.value}>
-                          {city.label}
-                        </option>
-                      ))}
-                    </select>
-                    {formik.errors.city && formik.touched.city && (
-                      <div className="text-red-500">{formik.errors.city}</div>
+                      control={control}
+                      render={({ field }) => (
+                        <select
+                          {...field}
+                          className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
+                            errors.city ? "border-red-500" : ""
+                          }`}
+                        >
+                          <option value="">Select your city</option>
+                          {cities.map(
+                            (city: { label: string; value: string }, index) => (
+                              <option key={index} value={city.value}>
+                                {city.label}
+                              </option>
+                            )
+                          )}
+                        </select>
+                      )}
+                    />
+                    {errors.city && (
+                      <div className="text-red-500">{errors.city.message}</div>
                     )}
                   </div>
 
@@ -338,24 +345,20 @@ const AdminStaffOnboard = () => {
                     </label>
                     <input
                       type="text"
-                      name="district"
+                      {...register("district")}
                       placeholder="Enter your district"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.district}
                       className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
-                        formik.errors.district && formik.touched.district
-                          ? "border-red-500"
-                          : ""
+                        errors.district ? "border-red-500" : ""
                       }`}
                     />
-                    {formik.errors.district && formik.touched.district && (
+                    {errors.district && (
                       <div className="text-red-500">
-                        {formik.errors.district}
+                        {errors.district.message}
                       </div>
                     )}
                   </div>
                 </div>
+
                 <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                   <div className="w-full xl:w-1/2">
                     <label className="mb-2.5 block text-black dark:text-white">
@@ -363,41 +366,32 @@ const AdminStaffOnboard = () => {
                     </label>
                     <input
                       type="text"
-                      name="state"
+                      {...register("state")}
                       placeholder="Enter your state"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.state}
                       className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
-                        formik.errors.state && formik.touched.state
-                          ? "border-red-500"
-                          : ""
+                        errors.state ? "border-red-500" : ""
                       }`}
                     />
-                    {formik.errors.state && formik.touched.state && (
-                      <div className="text-red-500">{formik.errors.state}</div>
+                    {errors.state && (
+                      <div className="text-red-500">{errors.state.message}</div>
                     )}
                   </div>
+
                   <div className="w-full xl:w-1/2">
                     <label className="mb-2.5 block text-black dark:text-white">
                       Country
                     </label>
                     <input
                       type="text"
-                      name="country"
+                      {...register("country")}
                       placeholder="Enter your country"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      value={formik.values.country}
                       className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
-                        formik.errors.country && formik.touched.country
-                          ? "border-red-500"
-                          : ""
+                        errors.country ? "border-red-500" : ""
                       }`}
                     />
-                    {formik.errors.country && formik.touched.country && (
+                    {errors.country && (
                       <div className="text-red-500">
-                        {formik.errors.country}
+                        {errors.country.message}
                       </div>
                     )}
                   </div>
@@ -411,48 +405,41 @@ const AdminStaffOnboard = () => {
                     <label className="mr-2">
                       <input
                         type="radio"
-                        name="gender"
+                        {...register("gender")}
                         value="male"
-                        onChange={formik.handleChange}
-                        checked={formik.values.gender === "male"}
+                        className={`${errors.gender ? "border-red-500" : ""}`}
                       />{" "}
                       Male
                     </label>
                     <label className="ml-2">
                       <input
                         type="radio"
-                        name="gender"
+                        {...register("gender")}
                         value="female"
-                        onChange={formik.handleChange}
-                        checked={formik.values.gender === "female"}
+                        className={`${errors.gender ? "border-red-500" : ""}`}
                       />{" "}
                       Female
                     </label>
                     <label className="ml-2">
                       <input
                         type="radio"
-                        name="gender"
+                        {...register("gender")}
                         value="other"
-                        onChange={formik.handleChange}
-                        checked={formik.values.gender === "other"}
+                        className={`${errors.gender ? "border-red-500" : ""}`}
                       />{" "}
                       Other
                     </label>
                   </div>
-                  {formik.errors.gender && formik.touched.gender && (
-                    <div className="text-red-500">{formik.errors.gender}</div>
+                  {errors.gender && (
+                    <div className="text-red-500">{errors.gender.message}</div>
                   )}
                 </div>
+
                 <button
                   type="submit"
-                  disabled={!formik.isValid || formik.isSubmitting}
-                  className={`w-full rounded bg-primaryBGColor p-3 font-medium text-gray hover:bg-opacity-90 ${
-                    !formik.isValid || formik.isSubmitting
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
-                  }`}
+                  className={`w-full rounded bg-primary p-3 font-medium text-white hover:bg-opacity-90`}
                 >
-                  {formik.isSubmitting ? "Submitting..." : "Submit"}
+                  Submit
                 </button>
               </div>
             </form>
@@ -463,4 +450,4 @@ const AdminStaffOnboard = () => {
   );
 };
 
-export default AdminStaffOnboard;
+export default OnBoardingAdminStaff;

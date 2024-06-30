@@ -14,6 +14,8 @@
     "url": ""
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.6.0",
+    "@types/js-cookie": "^3.0.6",
     "apexcharts": "^3.41.0",
     "axios": "^1.7.2",
     "dotenv": "^16.4.5",
@@ -21,6 +23,7 @@
     "formik": "^2.4.6",
     "headlessui": "^0.0.0",
     "jquery": "^3.7.1",
+    "js-cookie": "^3.0.5",
     "jsvectormap": "^1.5.3",
     "match-sorter": "^6.3.1",
     "moment": "^2.30.1",

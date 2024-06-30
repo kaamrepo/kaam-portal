@@ -5,7 +5,7 @@ import { UserTable } from "./UserTable";
 import useLoginStore from "../../store/login.store";
 const Users = () => {
   const { getUser } = useUserStore();
-  const { user } = useLoginStore();
+  const { loggedInUserId } = useLoginStore();
   const [activeTab, setActiveTab] = useState("Employers");
   const [searchTerm, setSearchTerm] = useState("");
   const handleTabChange = (tab: string) => {
@@ -60,7 +60,9 @@ const Users = () => {
             <button
               onClick={() => handleTabChange("KammPeadmins")}
               className={`inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${
-                activeTab === "KammPeadmins" ? "text-blue-600 border-blue-600" : ""
+                activeTab === "KammPeadmins"
+                  ? "text-blue-600 border-blue-600"
+                  : ""
               }`}
             >
               KaamPe Admins
@@ -84,7 +86,7 @@ const Users = () => {
               getUser({
                 skip: 0,
                 limit: 10,
-                searchOn: { excludeIds: user._id, isActive: true },
+                searchOn: { excludeIds: loggedInUserId, isActive: true },
               });
             }
           }}

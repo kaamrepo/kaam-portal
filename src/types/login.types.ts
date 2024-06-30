@@ -1,5 +1,6 @@
 export interface LoginType {
   user: Partial<User>;
+  loggedInUserId: string;
   loaderState: boolean;
   isAuthenticated: boolean;
   token: string | null;
@@ -9,6 +10,7 @@ export interface LoginType {
   logout: () => void;
   verifyOtp: (phone: string, otp: string) => void;
   registerUser: (payload: any) => void;
+  getUserDetails: (userid: string) => void;
 }
 
 export interface OtpResponse {
