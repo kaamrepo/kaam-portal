@@ -11,8 +11,8 @@ const RouteGuard: React.FC<RouteGuardProps> = ({
   isAuthenticated = true,
 }) => {
   console.log("isAuthenticated in routeGuard:", isAuthenticated);
-  // return isAuthenticated ? <Component /> : <Navigate to="/auth/signin" replace />;
-  return isAuthenticated ? <Component /> : <Component />;
+  return isAuthenticated ? <Component /> : <Navigate to="/auth/signin" replace />;
+  // return isAuthenticated ? <Component /> : <Component />;
 };
 
 export default RouteGuard;

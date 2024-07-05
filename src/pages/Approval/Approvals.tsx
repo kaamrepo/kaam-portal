@@ -1,12 +1,8 @@
 import { useState } from "react";
-import useUserStore from "../../store/user.store";
 import { ApprovalTable } from "./ApprovalTable";
-import useLoginStore from "../../store/login.store";
 import DefaultLayout from '../../layout/DefaultLayout'
 
  const Approvals = () => {
-  const { getUser } = useUserStore();
-  const { user } = useLoginStore();
   const [activeTab, setActiveTab] = useState("Employers");
   const [searchTerm, setSearchTerm] = useState("");
   const handleTabChange = (tab: string) => {
