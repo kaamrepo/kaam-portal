@@ -110,7 +110,7 @@ export const ApprovalTable = ({ searchInput }: { searchInput?: string }) => {
             className="flex items-center justify-center rounded-md bg-meta-3 py-2 px-3 text-center font-medium text-white hover:bg-opacity-90"
             onClick={() => handleApproval(row)}
           >
-            Approve
+            {row?.status}
           </button>
       </>
       ),
