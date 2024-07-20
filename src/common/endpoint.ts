@@ -8,5 +8,5 @@ export const JOB = `${COMMON_ENDPOINT}jobs`;
 export const JOB_APPLICATION = `${COMMON_ENDPOINT}jobapplications`;
 export const APPROVAL = `${COMMON_ENDPOINT}approval`;
 export const ANALYTICS = `${COMMON_ENDPOINT}analytics`;
-export const ONBOARDSTAFF = `${COMMON_ENDPOINT}create-staff`;
+export const ONBOARDSTAFF = `${COMMON_ENDPOINT}staff`;
 // Other endpoints...
