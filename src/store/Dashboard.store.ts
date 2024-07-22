@@ -8,20 +8,18 @@ export const useDashboardStore = create<DashboardStore>((set) => ({
   totalAppliedJobs: 0,
   totalEngagements: 0,
   locationData: {},
-  userBifercation:[],
+  userBifercation: [],
   getCounts: async () => {
     try {
       const countStats = await API.get(ANALYTICS, {
         params: { analyticscount: true },
       });
       if (Object.keys(countStats?.data)?.length !== 0) {
-        console.log("in the if ", countStats.data);
-
         set(() => ({
-          totaluser: countStats?.data?.totalusercount,
-          totalPostedJobs: countStats?.data?.totaljobcount,
-          totalAppliedJobs: countStats?.data?.totaljobapplicationscount,
-          totalEngagements: countStats?.data?.engagementcount,
+          totaluser: countStats?.data?.totalusercount ?? 0,
+          totalPostedJobs: countStats?.data?.totaljobcount ?? 0,
+          totalAppliedJobs: countStats?.data?.totaljobapplicationscount ?? 0,
+          totalEngagements: countStats?.data?.engagementcount ?? 0,
         }));
       }
       return {

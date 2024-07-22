@@ -1,18 +1,25 @@
-// RouteGuard.tsx
 import { Navigate } from "react-router-dom";
-
+import useLoginStore from "../store/login.store";
 interface RouteGuardProps {
   Component: React.ComponentType<any>;
-  isAuthenticated: boolean;
+  requiredScopes?: string[];
 }
-
 const RouteGuard: React.FC<RouteGuardProps> = ({
   Component,
-  isAuthenticated = true,
+  requiredScopes = [],
 }) => {
-  console.log("isAuthenticated in routeGuard:", isAuthenticated);
-  return isAuthenticated ? <Component /> : <Navigate to="/auth/signin" replace />;
-  // return isAuthenticated ? <Component /> : <Component />;
+  const { feScopes, isAuthenticated } = useLoginStore();
+
+  const hasRequiredScopes = requiredScopes.every((scope) =>
+    feScopes.includes(scope)
+  );
+  if (!isAuthenticated) {
+    return <Navigate to="/auth/signin" replace />;
+  }
+  if (!hasRequiredScopes) {
+    return <Navigate to="/403" replace />;
+  }
+  return <Component />;
 };
 
 export default RouteGuard;

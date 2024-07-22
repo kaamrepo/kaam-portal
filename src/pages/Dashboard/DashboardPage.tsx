@@ -6,16 +6,16 @@ import TableZoneWiseCount from "../../components/Tables/TableZoneWiseCount";
 import useDashboardStore from "../../store/Dashboard.store";
 import { useEffect } from "react";
 const DashboardPage = () => {
-  const { getCounts, totaluser,
+  const {
+    // getCounts,
+    totaluser,
     totalPostedJobs,
     totalAppliedJobs,
     totalEngagements,
-    
-   } = useDashboardStore();
-   console.log("totaluser",totaluser);
-   
+  } = useDashboardStore();
+
   useEffect(() => {
-    getCounts();
+    // getCounts();
   }, []);
   return (
     <DefaultLayout>
@@ -100,7 +100,7 @@ const DashboardPage = () => {
       </div>
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-        <UserBifercationCharte />
+        {/* <UserBifercationCharte /> */}
         <TableZoneWiseCount></TableZoneWiseCount>
         <RegistrationProgressionChart />
       </div>

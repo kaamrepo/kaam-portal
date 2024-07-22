@@ -1,5 +1,6 @@
 export interface LoginType {
   user: Partial<User>;
+  feScopes: string[];
   loggedInUserId: string;
   loaderState: boolean;
   isAuthenticated: boolean;
@@ -8,11 +9,17 @@ export interface LoginType {
   setLoaderState: (status: boolean) => void;
   getOtp: (payload: { dialcode: string; phone: string }) => void;
   logout: () => void;
+  loginWithEmail: (payload: EmailPasswordPayload) => void;
   verifyOtp: (phone: string, otp: string) => void;
   registerUser: (payload: any) => void;
   getUserDetails: (userid: string) => void;
+  getAuthDetails: () => void;
 }
 
+export interface EmailPasswordPayload {
+  email: string;
+  password: string;
+}
 export interface OtpResponse {
   data: {
     _id?: string;

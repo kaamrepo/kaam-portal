@@ -1,7 +1,11 @@
 import API from "../common/API";
 import { create } from "zustand";
 import { LOGIN_USER, REGISTER_USER, GET_OTP, USER } from "../common/endpoint";
-import { LoginResponse, LoginType } from "../types/login.types";
+import {
+  EmailPasswordPayload,
+  LoginResponse,
+  LoginType,
+} from "../types/login.types";
 import Cookies from "js-cookie";
 interface OtpPayload {
   dialcode: string;
@@ -12,6 +16,7 @@ export const useLoginStore = create<LoginType>((set) => ({
   isAuthenticated: false,
   user: {},
   token: null,
+  feScopes: [],
   loaderState: false,
   loggedInUserId: "",
   // Set loader state
@@ -76,12 +81,57 @@ export const useLoginStore = create<LoginType>((set) => ({
     }
   },
 
+  // Login
+  loginWithEmail: async (payload: EmailPasswordPayload) => {
+    try {
+      const response = await API.post(LOGIN_USER, {
+        ...payload,
+        strategy: "basic",
+      });
+
+      if (
+        response?.data?.accessToken &&
+        response?.data?.authentication?.payload?.feScopes?.length
+      ) {
+        Cookies.set("token", response.data.accessToken);
+        Cookies.set("user", JSON.stringify(response.data.user));
+        Cookies.set("loggedInUserId", response?.data?.user?._id);
+        Cookies.set(
+          "feScopes",
+          JSON.stringify(response?.data?.authentication?.payload?.feScopes)
+        );
+        Cookies.set("isAuthenticated", "true");
+        set(() => ({
+          feScopes: response?.data?.authentication?.payload?.feScopes,
+          loggedInUserId: response?.data?.user?._id,
+          isAuthenticated: true,
+        }));
+        return {
+          data: response?.data,
+          status: true,
+        };
+      } else {
+        return {
+          data: { message: "You don't have access to this resource" },
+          status: false,
+        };
+      }
+    } catch (error: any) {
+      console.log("Error in getting OTP:", error?.response?.data?.message);
+      return {
+        data: error?.response?.data?.message || "Failed to get OTP",
+        status: false,
+      };
+    }
+  },
 
   logout: async () => {
     try {
       Cookies.remove("token");
       Cookies.remove("user");
       Cookies.remove("loggedInUserId");
+      Cookies.remove("feScopes");
+      Cookies.remove("isAuthenticated");
       set(() => ({
         user: {},
         isAuthenticated: false,
@@ -133,6 +183,21 @@ export const useLoginStore = create<LoginType>((set) => ({
         status: false,
       };
     }
+  },
+  getAuthDetails: () => {
+    const getAuthStatus = Cookies.get("isAuthenticated");
+    console.log("🚀 ~ getAuthDetails: ~ getAuthStatus:", getAuthStatus);
+    const getFeScopes = Cookies.get("feScopes");
+    console.log("🚀 ~ getAuthDetails: ~ getFeScopes:", getFeScopes);
+    // Convert "true" or "false" to boolean
+    const isAuthenticated = getAuthStatus === "true";
+    // Parse JSON string to array of strings
+    const feScopes = getFeScopes ? JSON.parse(getFeScopes) : [];
+
+    set(() => ({
+      isAuthenticated,
+      feScopes,
+    }));
   },
   getUserDetails: async (userId: string) => {
     const response = await API.get(`${USER}/${userId}`);

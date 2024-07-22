@@ -6,6 +6,7 @@ import useCategoryStore from "../../store/categories.store";
 import { Category } from "../../types/category.types";
 import Table, { ColumnDef } from "../../common/Table/Table";
 import { AddCategoriesModal } from "./AddCategoriesModal";
+import commonPermissionValidator from "../../common/commonPermissionValidator";
 const Categories = () => {
   const { categories, getCategories, totalCount } = useCategoryStore();
   type SelectedCategory = Category | null;
@@ -102,8 +103,9 @@ const Categories = () => {
             Categories
           </h4>
           <button
-            className="flex items-center justify-center rounded-md bg-meta-3 py-2 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+            className="flex items-center justify-center rounded-md disabled:bg-gray-300 bg-meta-3 py-2 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
             onClick={() => openAddCategoryModal()}
+            disabled={commonPermissionValidator(["CATEGORIES_CREATE"])}
           >
             Add
           </button>
