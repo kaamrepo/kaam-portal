@@ -1,10 +1,11 @@
 import API from "../common/API";
 import { create } from "zustand";
-import { ONBOARDSTAFF, USER } from "../common/endpoint";
+import { GET_ROLES, ONBOARDSTAFF, USER } from "../common/endpoint";
 import { UserStore, getUserPayload, User } from "../types/user.types";
 
 export const useUserStore = create<UserStore>((set) => ({
   users: [],
+  roles: [],
   totalCount: 0,
   getUser: async (payload: getUserPayload) => {
     const query: any = {};
@@ -101,6 +102,37 @@ export const useUserStore = create<UserStore>((set) => ({
       }
     } catch (error) {
       throw error;
+    }
+  },
+  listOfroles: async (payload: getUserPayload) => {
+    const query: any = {};
+    try {
+      if (payload.searchOn && payload.searchOn.paginate === false) {
+        query["paginate"] = false;
+      }
+      query["select"] = ["_id", "roleName", "roleId", "isActive"];
+      const response = await API.get(`${GET_ROLES}`, {
+        params: query,
+      });
+      if (response?.data?.length) {
+        set(() => ({
+          roles: response.data,
+        }));
+        return {
+          data: response.data,
+          status: true,
+        };
+      } else {
+        return {
+          data: [],
+          status: false,
+        };
+      }
+    } catch (error) {
+      return {
+        data: [],
+        status: false,
+      };
     }
   },
 }));

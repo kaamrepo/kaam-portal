@@ -43,6 +43,7 @@ export interface UserData {
 
 export interface UserStore {
   users: UserData[];
+  roles: any;
   patchUser: (payload: User) => Promise<{
     data: UserData | [];
     status: boolean;
@@ -54,6 +55,10 @@ export interface UserStore {
   totalCount: number;
   getUser: (payload: getUserPayload) => Promise<{
     data: UserData | [];
+    status: boolean;
+  }>;
+  listOfroles: (payload: getUserPayload) => Promise<{
+    data: [];
     status: boolean;
   }>;
 }

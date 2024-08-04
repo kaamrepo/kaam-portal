@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import DefaultLayout from "../../layout/DefaultLayout";
 import Breadcrumb from "../../components/Breadcrumbs/Breadcrumb";
 import { useForm, Controller } from "react-hook-form";
@@ -9,9 +9,10 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import useUserStore from "../../store/user.store";
 import { User } from "../../types/user.types";
+
 const OnBoardingAdminStaff = () => {
   const [cities, setCities] = useState([]);
-  const { createStaffUser } = useUserStore();
+  const { createStaffUser, listOfroles, roles } = useUserStore();
   const navigate = useNavigate();
   const getAddressDataByZIPCode = async (
     zipCode: string,
@@ -26,7 +27,6 @@ const OnBoardingAdminStaff = () => {
         setValue("district", res.data[0]?.PostOffice[0]?.District);
         setValue("state", res.data[0]?.PostOffice[0]?.State);
         setValue("country", res.data[0]?.PostOffice[0]?.Country);
-
         let placeSet = new Set();
         res.data[0]?.PostOffice.forEach(
           (p: { Block: string; Division: string }) => {
@@ -34,7 +34,6 @@ const OnBoardingAdminStaff = () => {
             placeSet.add(p?.Division);
           }
         );
-
         setCities(Array.from(placeSet).map((d) => ({ label: d, value: d })));
       } else {
         toast.error("Invalid ZIP Code.");
@@ -58,7 +57,10 @@ const OnBoardingAdminStaff = () => {
     email: yup.string().email("Invalid email address"),
     role: yup
       .string()
-      .oneOf(["employer", "employee"], "Invalid role")
+      .oneOf(
+        roles.map((elem: { roleId: string }) => elem.roleId),
+        "Invalid roleId"
+      )
       .required("Role is required"),
     dateofbirth: yup.date().required("Date of birth is required"),
     address: yup.string().required("Address is required"),
@@ -86,7 +88,7 @@ const OnBoardingAdminStaff = () => {
   } = useForm({
     defaultValues: {
       email: "",
-      role: "employee",
+      role: "",
       firstname: "",
       lastname: "",
       dateofbirth: new Date(),
@@ -131,10 +133,12 @@ const OnBoardingAdminStaff = () => {
       toast.error("Error while adding new staff");
     }
   };
-
+  useEffect(() => {
+    listOfroles({ searchOn: { paginate: false } });
+  }, []);
   return (
     <DefaultLayout>
-      <Breadcrumb pageName="OnBoard admin" />
+      <Breadcrumb pageName="Onboard Operations" />
       <div className="grid grid-cols-1">
         <div className="flex flex-col gap-9">
           <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -243,12 +247,26 @@ const OnBoardingAdminStaff = () => {
                   </label>
                   <select
                     {...register("role")}
+                    placeholder="Please select role"
                     className={`w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary ${
                       errors.role ? "border-red-500" : ""
                     }`}
                   >
-                    <option value="employee">Employee</option>
-                    <option value="employer">Employer</option>
+                    <option value="" disabled selected>
+                      Select role
+                    </option>
+                    {Array.isArray(roles) &&
+                      roles?.map(
+                        (elem: {
+                          _id: string;
+                          roleName: string;
+                          roleId: string;
+                        }) => (
+                          <option key={elem._id} value={elem.roleId}>
+                            {elem.roleName}
+                          </option>
+                        )
+                      )}
                   </select>
                   {errors.role && (
                     <div className="text-red-500">{errors.role.message}</div>

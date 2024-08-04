@@ -186,9 +186,7 @@ export const useLoginStore = create<LoginType>((set) => ({
   },
   getAuthDetails: () => {
     const getAuthStatus = Cookies.get("isAuthenticated");
-    console.log("🚀 ~ getAuthDetails: ~ getAuthStatus:", getAuthStatus);
     const getFeScopes = Cookies.get("feScopes");
-    console.log("🚀 ~ getAuthDetails: ~ getFeScopes:", getFeScopes);
     // Convert "true" or "false" to boolean
     const isAuthenticated = getAuthStatus === "true";
     // Parse JSON string to array of strings

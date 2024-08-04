@@ -250,7 +250,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     (isActive && "!text-white")
                   }
                 >
-                  <svg  
+                  <svg
                     className="fill-current"
                     width="18"
                     height="19"
@@ -275,7 +275,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       </clipPath>
                     </defs>
                   </svg>
-                 onBoard Admin Staff
+                  Onboard Operations
                 </NavLink>
               </li>
               <li className="my-2">
@@ -286,7 +286,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     (isActive && "!text-white")
                   }
                 >
-                  <svg  
+                  <svg
                     className="fill-current"
                     width="18"
                     height="19"
@@ -311,7 +311,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       </clipPath>
                     </defs>
                   </svg>
-                 Approvals
+                  Approvals
                 </NavLink>
               </li>
             </ul>

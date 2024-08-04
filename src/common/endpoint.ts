@@ -9,4 +9,5 @@ export const JOB_APPLICATION = `${COMMON_ENDPOINT}jobapplications`;
 export const APPROVAL = `${COMMON_ENDPOINT}approval`;
 export const ANALYTICS = `${COMMON_ENDPOINT}analytics`;
 export const ONBOARDSTAFF = `${COMMON_ENDPOINT}staff`;
+export const GET_ROLES = `${COMMON_ENDPOINT}roles`;
 // Other endpoints...

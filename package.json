@@ -14,7 +14,7 @@
     "url": ""
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.6.0",
+    "@hookform/resolvers": "^3.9.0",
     "@types/js-cookie": "^3.0.6",
     "apexcharts": "^3.41.0",
     "axios": "^1.7.2",
