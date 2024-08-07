@@ -3,7 +3,8 @@ import { Modal } from "react-responsive-modal";
 import { Props } from "../../types/category.types";
 import useCategoryStore from "../../store/categories.store";
 import toast from "react-hot-toast";
-import DefaultLayout from "../../layout/DefaultLayout";
+import { ThrottledBtn } from "../../common/Throtting/useThrottle";
+import commonPermissionValidator from "../../common/commonPermissionValidator";
 export const EditCategoryModal: React.FC<Props> = ({
   open,
   onCloseModal,
@@ -13,7 +14,6 @@ export const EditCategoryModal: React.FC<Props> = ({
   const { updateCategory, getCategories } = useCategoryStore();
   const handleSubmit = async () => {
     const response: any = await updateCategory(selectedCategory);
-    console.log("response", response);
     if (response?.status) {
       toast.success("Category updated successfully", {
         position: "top-right",
@@ -103,12 +103,18 @@ export const EditCategoryModal: React.FC<Props> = ({
         </div>
       </div>
       <div className="flex justify-end">
-        <button
-          className="inline-flex items-center justify-center rounded-md bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+        <ThrottledBtn
+          delay={500}
+          btnTitle={"Submit"}
+          className={
+            "inline-flex items-center justify-center rounded-md bg-meta-3 py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+          }
           onClick={handleSubmit}
-        >
-          Submit
-        </button>
+          disabled={commonPermissionValidator([
+            "CATEGORIES_CREATE",
+            "CATEGORIES_UPDATE",
+          ])}
+        ></ThrottledBtn>
       </div>
     </Modal>
   );

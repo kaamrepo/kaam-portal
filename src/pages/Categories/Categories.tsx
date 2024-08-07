@@ -7,6 +7,7 @@ import { Category } from "../../types/category.types";
 import Table, { ColumnDef } from "../../common/Table/Table";
 import { AddCategoriesModal } from "./AddCategoriesModal";
 import commonPermissionValidator from "../../common/commonPermissionValidator";
+import { ThrottledBtn } from "../../common/Throtting/useThrottle";
 const Categories = () => {
   const { categories, getCategories, totalCount } = useCategoryStore();
   type SelectedCategory = Category | null;
@@ -28,7 +29,6 @@ const Categories = () => {
   const openAddCategoryModal = () => {
     setIsModalAddOpen(true);
   };
-
   const closeAddCategoryModal = () => {
     setIsModalAddOpen(false);
   };
@@ -73,7 +73,13 @@ const Categories = () => {
       render: (row) => (
         <>
           <div className="flex space-x-1">
-            <span onClick={() => openEditCategoryModal(row)}>
+            <button
+              onClick={() => openEditCategoryModal(row)}
+              disabled={commonPermissionValidator([
+                "CATEGORIES_CREATE",
+                "CATEGORIES_UPDATE",
+              ])}
+            >
               <svg
                 className="feather feather-edit"
                 fill="none"
@@ -89,7 +95,7 @@ const Categories = () => {
                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
               </svg>
-            </span>
+            </button>
           </div>
         </>
       ),
@@ -102,13 +108,18 @@ const Categories = () => {
           <h4 className="text-xl font-semibold text-black dark:text-white">
             Categories
           </h4>
-          <button
-            className="flex items-center justify-center rounded-md disabled:bg-gray-300 bg-meta-3 py-2 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
-            onClick={() => openAddCategoryModal()}
-            disabled={commonPermissionValidator(["CATEGORIES_CREATE"])}
-          >
-            Add
-          </button>
+          <ThrottledBtn
+            delay={500}
+            btnTitle={"Add"}
+            className={
+              "flex items-center justify-center rounded-md disabled:bg-gray-300 bg-meta-3 py-2 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+            }
+            onClick={openAddCategoryModal}
+            disabled={commonPermissionValidator([
+              "CATEGORIES_CREATE",
+              "CATEGORIES_UPDATE",
+            ])}
+          ></ThrottledBtn>
         </div>
 
         <div className="">

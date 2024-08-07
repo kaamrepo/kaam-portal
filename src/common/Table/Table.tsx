@@ -68,10 +68,8 @@ function Table(props: {
       searchOn: props?.searchInput,
     });
   }, [Number(props?.skip), Number(props?.limit)]);
-
   const pagedData = data;
   const numPages = Math.ceil(props?.totalCount / props?.limit);
-
   useEffect(() => {
     setPageNo(1);
     props.setSkip(0);
@@ -80,7 +78,6 @@ function Table(props: {
     let newData = [...(props?.data ?? [])];
     setData(newData);
   }, [props?.data]);
-
   return (
     <>
       <div className="bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">

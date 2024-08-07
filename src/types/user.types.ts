@@ -26,6 +26,7 @@ export interface getUserPayload {
     wildString?: string;
     paginate?: boolean;
     excludeIds?: string;
+    roleId?: string;
   };
 }
 

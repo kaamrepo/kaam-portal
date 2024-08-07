@@ -27,6 +27,9 @@ export const useUserStore = create<UserStore>((set) => ({
     if (payload.searchOn && payload.searchOn.excludeIds) {
       query["excludeIds"] = payload.searchOn.excludeIds;
     }
+    if (payload.searchOn && payload.searchOn.roleId) {
+      query["roleId"] = payload.searchOn.roleId;
+    }
     try {
       const response = await API.get(`${USER}`, {
         params: query,

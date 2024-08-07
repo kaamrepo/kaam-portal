@@ -7,7 +7,13 @@ import Table, { ColumnDef } from "../../common/Table/Table";
 import useLoginStore from "../../store/login.store";
 import { User } from "../../types/user.types";
 
-export const UserTable = ({ searchInput }: { searchInput?: string }) => {
+export const UserTable = ({
+  searchInput,
+  roleId,
+}: {
+  searchInput?: string;
+  roleId?: string;
+}) => {
   const { user } = useLoginStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activityModalOpen, setActivityModalOpen] = useState(false);
@@ -21,23 +27,21 @@ export const UserTable = ({ searchInput }: { searchInput?: string }) => {
   const { getUser, users, totalCount } = useUserStore();
   const { categories, getCategories } = useCategoryStore();
   useEffect(() => {
-    if (searchInput) {
-      getUser({
-        skip: Number(skip),
-        limit: limit,
-        searchOn: {
-          wildString: searchInput,
-          excludeIds: user._id,
-          isActive: true,
-        },
-      });
-      setSearchOn({
-        wildString: searchInput,
-        excludeIds: user._id,
-        isActive: true,
-      });
-    }
-  }, [searchInput, setSearchOn]);
+    const filters: any = {
+      excludeIds: user._id,
+      isActive: true,
+      ...(searchInput && { wildString: searchInput }),
+      ...(roleId && { roleId }), // Add roleId filter if it exists
+    };
+
+    getUser({
+      skip: Number(skip),
+      limit: limit,
+      searchOn: filters,
+    });
+
+    setSearchOn(filters);
+  }, [searchInput, roleId, skip, limit, user._id, getUser]);
   const openUserActivityModal = (user: User) => {
     setSelectedUser(user);
     setActivityModalOpen(true);
